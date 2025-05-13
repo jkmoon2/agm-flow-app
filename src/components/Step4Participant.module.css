@@ -31,7 +31,7 @@
   padding: 0 8px 8px;
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
-  font-weight: 600;
+  font-weight: normal;    /* ← 굵기 해제 */
 }
 
 .manual {
@@ -40,12 +40,14 @@
 
 .total {
   font-size: 14px;
+  font-weight: normal;    /* ← 굵기 해제 */
+  white-space: nowrap;    /* ← 한 줄 유지 */
+  text-align: right;      /* ← 우측 정렬 */
 }
 
 /* 3차 헤더: 컬럼 타이틀 */
 .participantRowHeader {
   display: flex;
-  gap: 8px; /* ← 칸 간격 추가 */
   margin: 0 0 8px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
@@ -53,13 +55,13 @@
   font-weight: 600;
 }
 .participantRowHeader .delete {
-  font-size: 12px; /* ← '선택' 타이틀만 크기 축소 */
+  font-size: 12px;
 }
 
 /* 그룹 선택 드롭다운 */
 .groupSelect {
   width: 100%;
-  height: 32px;          /* 입력 박스와 비슷한 높이 */
+  height: 32px;          
   border: 1px solid #ccc;
   border-radius: 4px;
   background: #fff;
@@ -91,9 +93,8 @@
   white-space: nowrap;
 }
 
-/* ← 닉네임 칸만 flex 비율 키워서 넓히고, 나머지 칸은 그대로 유지 */
 .group    { flex: 0 0 40px; }
-.nickname { flex: 1.2;        /* 닉네임 영역 확대 */ }
+.nickname { flex: 1.2;        }
 .handicap { flex: 0 0 60px; }
 .delete   { flex: 0 0 60px; }
 
@@ -105,15 +106,18 @@
   text-align: center;
 }
 
-/* 하단 버튼 */
+/* ──────────── 하단 버튼 (크기만 2·3페이지와 동일) ──────────── */
 .stepFooter {
   display: flex;
   gap: 8px;
   margin-top: auto;
 }
+
 .stepFooter button {
   flex: 1;
-  padding: 8px 0;
+  height: 40px;        /* ← 2·3페이지 버튼 높이와 동일 */
+  line-height: 40px;   /* ← 텍스트 수직 중앙 정렬 */
+  padding: 0;          /* ← 위아래 패딩 제거 */
   font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
@@ -121,6 +125,8 @@
   cursor: pointer;
   transition: background 0.2s ease;
 }
+
+/* hover/active 효과는 원본과 동일하게 유지 */
 .stepFooter button:hover {
   background: #f0f0f0;
 }
@@ -128,7 +134,7 @@
   background: #e0e0e0;
 }
 
-/* 이전/다음 버튼: 회색 배경, 검은 텍스트 */
+/* 이전/다음 버튼: 회색 배경, 검은 텍스트 (원본 그대로) */
 .stepFooter button:first-child,
 .stepFooter button:last-child {
   background: #f0f0f0;
@@ -143,7 +149,7 @@
   background: #d0d0d0;
 }
 
-/* 추가/삭제 버튼: 흰 배경, 파란 텍스트 */
+/* 추가/삭제 버튼: 흰 배경, 파란 텍스트 (원본 그대로) */
 .stepFooter button:nth-child(2),
 .stepFooter button:nth-child(3) {
   color: #007bff;
