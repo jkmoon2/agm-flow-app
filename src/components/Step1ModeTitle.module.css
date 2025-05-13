@@ -7,75 +7,86 @@
 }
 
 .step1 {
-  /* Step1 전용 추가 스타일 */
+  /* 1단계 전용 스타일 필요하면 여기에 */
 }
 
+/* 1차 헤더: 제목 */
 .stepHeader {
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
 }
-
 .stepHeader h3 {
+  margin: 0;
   font-size: 18px;
   text-align: center;
-  margin: 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
 }
 
-.btnGroup {
+/* 2차 헤더: 모드 선택 버튼 */
+.modeButtons {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  justify-content: center;
+  margin: 0 0 8px 0;
 }
-
-.btnGroup button {
-  flex: 1;
-  padding: 8px;
-  font-size: 14px;
-  background: #fff;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  color: #007bff;
-  height: 40px;
-  transition: background 0.2s ease;
-}
-
-.btnGroup button:hover {
-  background: #f0f0f0;
-}
-
-.btnGroup button.active {
-  background: #007bff;
-  color: #fff;
-  border-color: #007bff;
-}
-
-.fullWidthInput {
-  width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  margin-top: 4px;
-  margin-bottom: 12px;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.fullWidthInput:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
-.stepFooter {
-  margin-top: auto;
-  display: flex;
-  gap: 8px;
-}
-
-.stepFooter button {
+.modeButtons button {
   flex: 1;
   padding: 8px 0;
   font-size: 14px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #007bff;
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.modeButtons button + button {
+  border-left: none;
+}
+.modeButtons button.active {
+  background: #007bff;
+  color: #fff;
+}
+
+/* 3차 헤더: 대회 제목 입력 */
+.titleInput {
+  margin: 0 8px 8px;
+}
+.titleInput input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* ——————————————— */
+/*       하단 버튼       */
+/* ——————————————— */
+.stepFooter {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+.stepFooter button {
+  flex: 1;
+  height: 48px;         /* 48px 으로 조정 */
+  line-height: 48px;    /* 텍스트 수직 중앙 */
+  padding: 0;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.stepFooter button:hover {
+  background: #f0f0f0;
+}
+.stepFooter button:active {
+  background: #e0e0e0;
+}
+/* “추가/삭제” 버튼만 파란 글씨 */
+.stepFooter button:nth-child(2),
+.stepFooter button:nth-child(3) {
+  color: #007bff;
 }
