@@ -7,83 +7,75 @@
 }
 
 .step1 {
-  /* 1단계 전용 스타일이 더 필요하면 여기에 */
+  /* Step1 전용 추가 스타일 */
 }
 
-/* 1차 헤더: 제목 */
 .stepHeader {
-  margin: 0 0 8px 0;
+  margin-bottom: 8px;
 }
+
 .stepHeader h3 {
-  margin: 0;
   font-size: 18px;
   text-align: center;
+  margin: 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
 }
 
-/* 2차 헤더: 모드 선택 버튼 */
-.modeButtons {
+.btnGroup {
   display: flex;
-  justify-content: center;
-  margin: 0 0 8px 0;
-}
-.modeButtons button {
-  flex: 1;
-  padding: 8px 0;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  background: #fff;
-  color: #007bff;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.modeButtons button + button {
-  border-left: none;
-}
-.modeButtons button.active {
-  background: #007bff;
-  color: #fff;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-/* 3차 헤더: 대회 제목 입력 */
-.titleInput {
-  margin: 0 8px 8px;
+.btnGroup button {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #007bff;
+  height: 40px;
+  transition: background 0.2s ease;
 }
-.titleInput input {
+
+.btnGroup button:hover {
+  background: #f0f0f0;
+}
+
+.btnGroup button.active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.fullWidthInput {
   width: 100%;
   padding: 8px;
   font-size: 14px;
-  box-sizing: border-box;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  height: 40px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box;
 }
 
-/* 하단 버튼 */
+.fullWidthInput:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
 .stepFooter {
+  margin-top: auto;
   display: flex;
   gap: 8px;
-  margin-top: auto;
 }
+
 .stepFooter button {
   flex: 1;
-  height: 48px;
-  line-height: 48px;
-  padding: 0;
+  padding: 8px 0;
   font-size: 14px;
-  text-align: center;
-  border: 1px solid #ccc;
-  background: #fff;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-.stepFooter button:hover {
-  background: #f0f0f0;
-}
-.stepFooter button:active {
-  background: #e0e0e0;
-}
-.stepFooter button:nth-child(2),
-.stepFooter button:nth-child(3) {
-  color: #007bff;
 }
