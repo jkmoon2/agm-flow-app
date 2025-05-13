@@ -45,11 +45,15 @@
 /* 3차 헤더: 컬럼 타이틀 */
 .participantRowHeader {
   display: flex;
+  gap: 8px; /* ← 칸 간격 추가 */
   margin: 0 0 8px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   font-weight: 600;
+}
+.participantRowHeader .delete {
+  font-size: 12px; /* ← '선택' 타이틀만 크기 축소 */
 }
 
 /* 그룹 선택 드롭다운 */
@@ -63,7 +67,6 @@
   text-align: center;
   cursor: pointer;
   padding: 0 4px;
-  /* 기본 셀렉트 외형 유지 */
 }
 
 /* 리스트 영역 */
@@ -88,8 +91,9 @@
   white-space: nowrap;
 }
 
+/* ← 닉네임 칸만 flex 비율 키워서 넓히고, 나머지 칸은 그대로 유지 */
 .group    { flex: 0 0 40px; }
-.nickname { flex: 1;       }
+.nickname { flex: 1.2;        /* 닉네임 영역 확대 */ }
 .handicap { flex: 0 0 60px; }
 .delete   { flex: 0 0 60px; }
 
