@@ -7,110 +7,92 @@
 }
 
 .step2 {
-  /* Step2 전용 스타일 공간 */
+  /* 2단계 전용 스타일 추가 가능 */
 }
 
+/* 1차 헤더: 제목 */
 .stepHeader {
-  margin-bottom: 8px;
+  margin: 0 0 8px 0;
 }
-
 .stepHeader h3 {
+  margin: 0;
   font-size: 18px;
   text-align: center;
-  margin: 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
 }
 
-.roomCountSelector {
+/* 2차 헤더: 개수 조절 버튼 */
+.countButtons {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  justify-content: center;
+  margin: 0 0 8px 0;
 }
-
-.rpBtn {
-  flex: 0 0 auto;
-  padding: 8px;
+.countButtons button {
+  width: 48px;
+  height: 48px;
   font-size: 14px;
-  background: #fff;
   border: 1px solid #ccc;
-  cursor: pointer;
-  color: #007bff;
-  height: 40px;
-  transition: background 0.2s ease;
-  white-space: nowrap;
-}
-
-.rpBtn:hover {
-  background: #f0f0f0;
-}
-
-.roomCountSelector button {
-  /* 나머지 버튼은 동일한 높이와 스타일 유지 */
-  flex: 1;
-  padding: 8px;
-  font-size: 14px;
   background: #fff;
-  border: 1px solid #ccc;
-  cursor: pointer;
   color: #007bff;
-  height: 40px;
-  transition: background 0.2s ease;
-  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
 }
-
-.roomCountSelector button:hover {
-  background: #f0f0f0;
-}
-
-.roomCountSelector button.active {
+.countButtons button.active {
   background: #007bff;
   color: #fff;
-  border-color: #007bff;
 }
 
-.roomNames {
-  margin-bottom: 12px;
-}
-
-.scrollArea {
+/* 3차: 방 이름 입력 */
+.roomList {
   flex: 1;
   overflow-y: auto;
+  padding: 0 8px 8px;
+  background: #fff;
 }
-
-.roomNameRow {
+.roomItem {
   display: flex;
   align-items: center;
   margin-bottom: 8px;
 }
-
-.roomNameRow label {
-  width: 50px;
+.roomItem label {
+  width: 60px;
+  font-size: 14px;
 }
-
-.roomNameRow input {
+.roomItem input {
   flex: 1;
   padding: 8px;
   font-size: 14px;
+  box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
-  box-sizing: border-box;
 }
 
-.roomNameRow input:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
+/* 하단 버튼 */
 .stepFooter {
-  margin-top: auto;
   display: flex;
   gap: 8px;
+  margin-top: auto;
 }
-
 .stepFooter button {
   flex: 1;
-  padding: 8px 0;
+  height: 48px;
+  line-height: 48px;
+  padding: 0;
   font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #fff;
   cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.stepFooter button:hover {
+  background: #f0f0f0;
+}
+.stepFooter button:active {
+  background: #e0e0e0;
+}
+.stepFooter button:nth-child(2),
+.stepFooter button:nth-child(3) {
+  color: #007bff;
 }
