@@ -26,23 +26,26 @@
 .excelHeader {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin: 0 0 8px 0;
   padding: 0 8px 8px;
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
-  font-weight: normal;    /* ← 굵기 해제 */
+  /* font-weight 해제 */
+  font-weight: normal;
 }
 
 .manual {
+  /* 파일 선택 우측 정렬(원본) */
   justify-content: flex-end;
 }
 
 .total {
+  /* 한 줄로, 우측 끝으로 고정, 비강조 */
   font-size: 14px;
-  font-weight: normal;    /* ← 굵기 해제 */
-  white-space: nowrap;    /* ← 한 줄 유지 */
-  text-align: right;      /* ← 우측 정렬 */
+  font-weight: normal;
+  white-space: nowrap;
+  margin-left: auto;    /* ← 이 부분 추가 */
+  flex-shrink: 0;       /* ← 이 부분 추가 */
+  text-align: right;
 }
 
 /* 3차 헤더: 컬럼 타이틀 */
@@ -53,7 +56,16 @@
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   font-weight: 600;
+  gap: 0; /* flex children 간격은 cell padding으로 해결 */
 }
+
+/* 헤더 칸별 flex 비율 (rows 와 동일하게) */
+.participantRowHeader .group    { flex: 0 0 40px; }
+.participantRowHeader .nickname { flex: 1.2;     }
+.participantRowHeader .handicap { flex: 0 0 60px; }
+.participantRowHeader .delete   { flex: 0 0 60px; }
+
+/* 헤더 ‘선택’ 글자만 작게 */
 .participantRowHeader .delete {
   font-size: 12px;
 }
@@ -61,7 +73,7 @@
 /* 그룹 선택 드롭다운 */
 .groupSelect {
   width: 100%;
-  height: 32px;          
+  height: 32px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background: #fff;
@@ -85,6 +97,12 @@
   height: 40px;
 }
 
+/* 리스트 칸별 flex 비율 (헤더와 동일) */
+.participantRow .group    { flex: 0 0 40px; }
+.participantRow .nickname { flex: 1.2;     }
+.participantRow .handicap { flex: 0 0 60px; }
+.participantRow .delete   { flex: 0 0 60px; }
+
 .cell {
   display: flex;
   align-items: center;
@@ -93,12 +111,15 @@
   white-space: nowrap;
 }
 
-.group    { flex: 0 0 40px; }
-.nickname { flex: 1.2;        }
-.handicap { flex: 0 0 60px; }
-.delete   { flex: 0 0 60px; }
+/* 닉네임 박스 넓히고 폰트 키우기 */
+.nickname input {
+  width: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 16px;   /* ← 크기 증가 */
+}
 
-.nickname input,
 .handicap input {
   width: 100%;
   padding: 4px;
@@ -106,7 +127,7 @@
   text-align: center;
 }
 
-/* ──────────── 하단 버튼 (크기만 2·3페이지와 동일) ──────────── */
+/* ──────────── 하단 버튼 (40px 높이 유지) ──────────── */
 .stepFooter {
   display: flex;
   gap: 8px;
@@ -115,9 +136,9 @@
 
 .stepFooter button {
   flex: 1;
-  height: 40px;        /* ← 2·3페이지 버튼 높이와 동일 */
-  line-height: 40px;   /* ← 텍스트 수직 중앙 정렬 */
-  padding: 0;          /* ← 위아래 패딩 제거 */
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
   font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
@@ -126,37 +147,22 @@
   transition: background 0.2s ease;
 }
 
-/* hover/active 효과는 원본과 동일하게 유지 */
 .stepFooter button:hover {
   background: #f0f0f0;
 }
+
 .stepFooter button:active {
   background: #e0e0e0;
 }
 
-/* 이전/다음 버튼: 회색 배경, 검은 텍스트 (원본 그대로) */
+/* 이전/다음 (회색) & 추가/삭제 (파랑) 버튼 스타일은 원본 그대로 */
 .stepFooter button:first-child,
 .stepFooter button:last-child {
   background: #f0f0f0;
   color: #333;
 }
-.stepFooter button:first-child:hover,
-.stepFooter button:last-child:hover {
-  background: #e0e0e0;
-}
-.stepFooter button:first-child:active,
-.stepFooter button:last-child:active {
-  background: #d0d0d0;
-}
 
-/* 추가/삭제 버튼: 흰 배경, 파란 텍스트 (원본 그대로) */
 .stepFooter button:nth-child(2),
 .stepFooter button:nth-child(3) {
   color: #007bff;
-}
-.stepFooter button:nth-child(2):active,
-.stepFooter button:nth-child(3):active {
-  background: #007bff;
-  color: #fff;
-  border-color: #007bff;
 }
