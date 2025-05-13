@@ -1,0 +1,116 @@
+/* src/components/Step2RoomSetup.module.css */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.step2 {
+  /* Step2 전용 스타일 공간 */
+}
+
+.stepHeader {
+  margin-bottom: 8px;
+}
+
+.stepHeader h3 {
+  font-size: 18px;
+  text-align: center;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.roomCountSelector {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.rpBtn {
+  flex: 0 0 auto;
+  padding: 8px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #007bff;
+  height: 40px;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.rpBtn:hover {
+  background: #f0f0f0;
+}
+
+.roomCountSelector button {
+  /* 나머지 버튼은 동일한 높이와 스타일 유지 */
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #007bff;
+  height: 40px;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.roomCountSelector button:hover {
+  background: #f0f0f0;
+}
+
+.roomCountSelector button.active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.roomNames {
+  margin-bottom: 12px;
+}
+
+.scrollArea {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.roomNameRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.roomNameRow label {
+  width: 50px;
+}
+
+.roomNameRow input {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.roomNameRow input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.stepFooter {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.stepFooter button {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 14px;
+  cursor: pointer;
+}

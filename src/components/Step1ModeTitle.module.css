@@ -1,0 +1,81 @@
+/* src/components/Step1ModeTitle.module.css */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.step1 {
+  /* Step1 전용 추가 스타일 */
+}
+
+.stepHeader {
+  margin-bottom: 8px;
+}
+
+.stepHeader h3 {
+  font-size: 18px;
+  text-align: center;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.btnGroup {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btnGroup button {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #007bff;
+  height: 40px;
+  transition: background 0.2s ease;
+}
+
+.btnGroup button:hover {
+  background: #f0f0f0;
+}
+
+.btnGroup button.active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.fullWidthInput {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.fullWidthInput:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.stepFooter {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.stepFooter button {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 14px;
+  cursor: pointer;
+}

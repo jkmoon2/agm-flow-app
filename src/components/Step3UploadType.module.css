@@ -1,0 +1,65 @@
+/* src/components/Step3UploadType.module.css */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.step3 {
+  /* Step3 전용 스타일(필요 시) */
+}
+
+.stepHeader {
+  margin-bottom: 8px;
+}
+
+.stepHeader h3 {
+  font-size: 18px;
+  text-align: center;
+  margin: 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.uploadTypeBtns {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.uploadTypeBtns button {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  color: #007bff;
+  height: 40px;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.uploadTypeBtns button:hover {
+  background: #f0f0f0;
+}
+
+.uploadTypeBtns button.active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+.stepFooter {
+  margin-top: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.stepFooter button {
+  flex: 1;
+  padding: 8px 0;
+  font-size: 14px;
+  cursor: pointer;
+}
