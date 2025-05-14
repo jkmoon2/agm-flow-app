@@ -12,13 +12,13 @@
 
 /* 1차 헤더: 제목 */
 .stepHeader {
-  margin: 0 0 8px 0;
+  margin: 0 0 4px 0;              /* ↓ margin-bottom: 8px → 4px */
 }
 .stepHeader h3 {
   margin: 0;
   font-size: 18px;
   text-align: center;
-  padding-bottom: 8px;
+  padding-bottom: 4px;            /* ↓ padding-bottom: 8px → 4px */
   border-bottom: 1px solid #ccc;
 }
 
@@ -26,32 +26,27 @@
 .excelHeader {
   position: relative;
   display: flex;
-  align-items: center;       
+  align-items: center;
   justify-content: space-between;
 
-  /* 자동 업로드 시와 동일한 여백(위/아래 8px) 적용 */
-  margin: 8px 0;      /* ↑ 8px 위/아래 여백 */
-  padding: 8px 8px;   /* ↑ 8px 위/아래 패딩 */
+  margin: 4px 0;                  /* ↓ margin: 8px → 4px */
+  padding: 4px 8px;               /* ↓ padding: 8px → 4px */
 
-  border-bottom: 1px solid #ccc;
   background: #f7f7f7;
+  border-bottom: 1px solid #ccc;
   font-weight: normal;
 }
 
 .manual {
   display: flex;
   align-items: center;
-  /* 좌측 “파일 선택” 그룹은 원본 그대로 */
 }
 
 .total {
   position: absolute;
   right: 8px;
-
-  /* 수직선 바로 아래가 아니라, 컨테이너 중앙(8px 여백 아래)으로 정렬 */
   top: 50%;
   transform: translateY(-50%);
-
   font-size: 14px;
   font-weight: normal;
   white-space: nowrap;
@@ -71,8 +66,7 @@
 .participantRowHeader .group    { flex: 0 0 40px; }
 .participantRowHeader .nickname { flex: 2.5;     }
 .participantRowHeader .handicap { flex: 0 0 50px; }
-.participantRowHeader .delete   { flex: 0 0 40px; }
-.participantRowHeader .delete   { font-size: 12px; }
+.participantRowHeader .delete   { flex: 0 0 40px; font-size: 12px; }
 
 /* 그룹 선택 드롭다운 */
 .groupSelect {
@@ -106,6 +100,7 @@
 .participantRow .handicap { flex: 0 0 50px; }
 .participantRow .delete   { flex: 0 0 40px; }
 
+/* 공통 cell 스타일 */
 .cell {
   display: flex;
   align-items: center;
@@ -144,11 +139,21 @@
   transition: background 0.2s ease;
 }
 
-.stepFooter button:hover { background: #f0f0f0; }
-.stepFooter button:active { background: #e0e0e0; }
+.stepFooter button:hover {
+  background: #f0f0f0;
+}
+
+.stepFooter button:active {
+  background: #e0e0e0;
+}
 
 /* 이전/다음(회색) & 추가/삭제(파랑) 버튼 스타일 원본 유지 */
 .stepFooter button:first-child,
-.stepFooter button:last-child { background: #f0f0f0; color: #333; }
+.stepFooter button:last-child {
+  background: #f0f0f0;
+  color: #333;
+}
 .stepFooter button:nth-child(2),
-.stepFooter button:nth-child(3) { color: #007bff; }
+.stepFooter button:nth-child(3) {
+  color: #007bff;
+}
