@@ -26,25 +26,32 @@
 .excelHeader {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: center;       
   justify-content: space-between;
-  /* 상단 여백과 파일선택 버튼 아래 공간을 원본과 통일 */
-  margin: 8px 0 8px 0;       /* ← margin-top:8px */
-  padding: 8px 8px 8px;      /* ← padding-top:8px */
+
+  /* 자동 업로드 시와 동일한 여백(위/아래 8px) 적용 */
+  margin: 8px 0;      /* ↑ 8px 위/아래 여백 */
+  padding: 8px 8px;   /* ↑ 8px 위/아래 패딩 */
+
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   font-weight: normal;
 }
 
 .manual {
-  /* 좌측 파일선택 그룹 - 원본 유지 */
+  display: flex;
+  align-items: center;
+  /* 좌측 “파일 선택” 그룹은 원본 그대로 */
 }
 
 .total {
   position: absolute;
   right: 8px;
+
+  /* 수직선 바로 아래가 아니라, 컨테이너 중앙(8px 여백 아래)으로 정렬 */
   top: 50%;
   transform: translateY(-50%);
+
   font-size: 14px;
   font-weight: normal;
   white-space: nowrap;
@@ -61,17 +68,11 @@
   background: #f7f7f7;
   font-weight: 600;
 }
-
-/* 헤더 칸별 flex 비율 */
 .participantRowHeader .group    { flex: 0 0 40px; }
-.participantRowHeader .nickname { flex: 2.5;     /* ← 키움 */ }
+.participantRowHeader .nickname { flex: 2.5;     }
 .participantRowHeader .handicap { flex: 0 0 50px; }
 .participantRowHeader .delete   { flex: 0 0 40px; }
-
-/* ‘선택’ 타이틀만 글자 크기 축소 */
-.participantRowHeader .delete {
-  font-size: 12px;
-}
+.participantRowHeader .delete   { font-size: 12px; }
 
 /* 그룹 선택 드롭다운 */
 .groupSelect {
@@ -100,14 +101,11 @@
   border-bottom: 1px solid #eee;
   height: 40px;
 }
-
-/* 리스트 칸별 flex 비율 */
 .participantRow .group    { flex: 0 0 40px; }
-.participantRow .nickname { flex: 2.5;     /* ← 키움 */ }
+.participantRow .nickname { flex: 2.5;     }
 .participantRow .handicap { flex: 0 0 50px; }
 .participantRow .delete   { flex: 0 0 40px; }
 
-/* 공통 cell 스타일 */
 .cell {
   display: flex;
   align-items: center;
@@ -126,7 +124,7 @@
   font-size: 16px;
 }
 
-/* ──────────── 하단 버튼 (40px 높이 유지) ──────────── */
+/* ─── 하단 버튼 (40px 높이 유지) ─── */
 .stepFooter {
   display: flex;
   gap: 8px;
@@ -146,21 +144,11 @@
   transition: background 0.2s ease;
 }
 
-.stepFooter button:hover {
-  background: #f0f0f0;
-}
-
-.stepFooter button:active {
-  background: #e0e0e0;
-}
+.stepFooter button:hover { background: #f0f0f0; }
+.stepFooter button:active { background: #e0e0e0; }
 
 /* 이전/다음(회색) & 추가/삭제(파랑) 버튼 스타일 원본 유지 */
 .stepFooter button:first-child,
-.stepFooter button:last-child {
-  background: #f0f0f0;
-  color: #333;
-}
+.stepFooter button:last-child { background: #f0f0f0; color: #333; }
 .stepFooter button:nth-child(2),
-.stepFooter button:nth-child(3) {
-  color: #007bff;
-}
+.stepFooter button:nth-child(3) { color: #007bff; }
