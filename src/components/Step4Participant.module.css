@@ -24,9 +24,10 @@
 
 /* 2차 헤더: 파일 선택 / 총 슬롯 */
 .excelHeader {
+  position: relative;            /* ← 추가 */
   display: flex;
   align-items: center;
-  justify-content: space-between; /* ← 추가 */
+  /* 공간 분배 제거: absolute 로 total 위치 고정 */
   margin: 0 0 8px 0;
   padding: 0 8px 8px;
   border-bottom: 1px solid #ccc;
@@ -35,12 +36,14 @@
 }
 
 .manual {
-  /* 파일 선택 그룹 (원본) */
-  /* flex 속성은 컨테이너(.excelHeader)에서 space-between 이 담당 */
+  /* 파일 선택 그룹(좌측) - 원본대로 flex:0 1 auto */
 }
 
 .total {
-  /* 한 줄 유지, 우측 정렬, 비강조 */
+  position: absolute;            /* ← 추가 */
+  right: 8px;                    /* ← 컨테이너 안쪽 여백과 맞춤 */
+  top: 50%;                      /* ← 수직 중앙 정렬 */
+  transform: translateY(-50%);   /* ← 수직 중앙 정렬 */
   font-size: 14px;
   font-weight: normal;
   white-space: nowrap;
@@ -50,21 +53,21 @@
 /* 3차 헤더: 컬럼 타이틀 */
 .participantRowHeader {
   display: flex;
+  gap: 8px; /* 칸 간격 */
   margin: 0 0 8px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   font-weight: 600;
-  gap: 8px; /* 헤더도 아이템 간 살짝 띄우기 */
 }
 
 /* 헤더 칸별 flex 비율 */
 .participantRowHeader .group    { flex: 0 0 40px; }
-.participantRowHeader .nickname { flex: 1.2;     }
-.participantRowHeader .handicap { flex: 1.2;     }
-.participantRowHeader .delete   { flex: 0 0 40px; /* 체크박스 칸만 살짝 줄임 */ }
+.participantRowHeader .nickname { flex: 2;       /* ← 키움 */ }
+.participantRowHeader .handicap { flex: 0 0 50px; /* ← 줄임 */ }
+.participantRowHeader .delete   { flex: 0 0 40px; }
 
-/* ‘선택’ 글자 크기만 축소 */
+/* ‘선택’ 글자만 작게 */
 .participantRowHeader .delete {
   font-size: 12px;
 }
@@ -92,15 +95,15 @@
 .participantRow {
   display: flex;
   align-items: center;
+  gap: 8px; /* 각 칸 간격 */
   border-bottom: 1px solid #eee;
   height: 40px;
-  gap: 8px; /* ← 각 박스 오른쪽으로 이동 */
 }
 
-/* 리스트 칸별 flex 비율 (헤더와 동일) */
+/* 리스트 칸별 flex 비율 */
 .participantRow .group    { flex: 0 0 40px; }
-.participantRow .nickname { flex: 1.2;     }
-.participantRow .handicap { flex: 1.2;     }
+.participantRow .nickname { flex: 2;       /* ← 키움 */ }
+.participantRow .handicap { flex: 0 0 50px; /* ← 줄임 */ }
 .participantRow .delete   { flex: 0 0 40px; }
 
 /* 공통 cell 스타일 */
@@ -112,14 +115,22 @@
   white-space: nowrap;
 }
 
-/* 닉네임 / G핸디 입력 박스 */
-.nickname input,
+/* 닉네임 입력 박스 */
+.nickname input {
+  width: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 16px;  /* 크게 */
+}
+
+/* G핸디 입력 박스 */
 .handicap input {
   width: 100%;
   padding: 4px;
   box-sizing: border-box;
   text-align: center;
-  font-size: 16px; /* ← 글자 크기 키움 */
+  font-size: 16px;  /* 닉네임과 동일하게 크게 */
 }
 
 /* ──────────── 하단 버튼 (40px 높이 유지) ──────────── */
