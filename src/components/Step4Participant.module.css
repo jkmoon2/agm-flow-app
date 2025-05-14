@@ -26,25 +26,24 @@
 .excelHeader {
   display: flex;
   align-items: center;
+  justify-content: space-between; /* ← 추가 */
+  margin: 0 0 8px 0;
   padding: 0 8px 8px;
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
-  /* font-weight 해제 */
   font-weight: normal;
 }
 
 .manual {
-  /* 파일 선택 우측 정렬(원본) */
-  justify-content: flex-end;
+  /* 파일 선택 그룹 (원본) */
+  /* flex 속성은 컨테이너(.excelHeader)에서 space-between 이 담당 */
 }
 
 .total {
-  /* 한 줄로, 우측 끝으로 고정, 비강조 */
+  /* 한 줄 유지, 우측 정렬, 비강조 */
   font-size: 14px;
   font-weight: normal;
   white-space: nowrap;
-  margin-left: auto;    /* ← 이 부분 추가 */
-  flex-shrink: 0;       /* ← 이 부분 추가 */
   text-align: right;
 }
 
@@ -56,16 +55,16 @@
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   font-weight: 600;
-  gap: 0; /* flex children 간격은 cell padding으로 해결 */
+  gap: 8px; /* 헤더도 아이템 간 살짝 띄우기 */
 }
 
-/* 헤더 칸별 flex 비율 (rows 와 동일하게) */
+/* 헤더 칸별 flex 비율 */
 .participantRowHeader .group    { flex: 0 0 40px; }
 .participantRowHeader .nickname { flex: 1.2;     }
-.participantRowHeader .handicap { flex: 0 0 60px; }
-.participantRowHeader .delete   { flex: 0 0 60px; }
+.participantRowHeader .handicap { flex: 1.2;     }
+.participantRowHeader .delete   { flex: 0 0 40px; /* 체크박스 칸만 살짝 줄임 */ }
 
-/* 헤더 ‘선택’ 글자만 작게 */
+/* ‘선택’ 글자 크기만 축소 */
 .participantRowHeader .delete {
   font-size: 12px;
 }
@@ -95,14 +94,16 @@
   align-items: center;
   border-bottom: 1px solid #eee;
   height: 40px;
+  gap: 8px; /* ← 각 박스 오른쪽으로 이동 */
 }
 
 /* 리스트 칸별 flex 비율 (헤더와 동일) */
 .participantRow .group    { flex: 0 0 40px; }
 .participantRow .nickname { flex: 1.2;     }
-.participantRow .handicap { flex: 0 0 60px; }
-.participantRow .delete   { flex: 0 0 60px; }
+.participantRow .handicap { flex: 1.2;     }
+.participantRow .delete   { flex: 0 0 40px; }
 
+/* 공통 cell 스타일 */
 .cell {
   display: flex;
   align-items: center;
@@ -111,20 +112,14 @@
   white-space: nowrap;
 }
 
-/* 닉네임 박스 넓히고 폰트 키우기 */
-.nickname input {
-  width: 100%;
-  padding: 4px;
-  box-sizing: border-box;
-  text-align: center;
-  font-size: 16px;   /* ← 크기 증가 */
-}
-
+/* 닉네임 / G핸디 입력 박스 */
+.nickname input,
 .handicap input {
   width: 100%;
   padding: 4px;
   box-sizing: border-box;
   text-align: center;
+  font-size: 16px; /* ← 글자 크기 키움 */
 }
 
 /* ──────────── 하단 버튼 (40px 높이 유지) ──────────── */
@@ -155,13 +150,12 @@
   background: #e0e0e0;
 }
 
-/* 이전/다음 (회색) & 추가/삭제 (파랑) 버튼 스타일은 원본 그대로 */
+/* 이전/다음 (회색) & 추가/삭제 (파랑) 버튼 스타일 원본 유지 */
 .stepFooter button:first-child,
 .stepFooter button:last-child {
   background: #f0f0f0;
   color: #333;
 }
-
 .stepFooter button:nth-child(2),
 .stepFooter button:nth-child(3) {
   color: #007bff;
