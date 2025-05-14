@@ -1,0 +1,143 @@
+/* src/components/Step5StrokeAssign.module.css */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 상단 제목 */
+.stepHeader {
+  margin: 0 0 4px 0;
+}
+.stepHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  text-align: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* 중간 스크롤 영역 */
+.tableContainer {
+  flex: 1;
+  overflow-y: auto;
+  background: #fff;
+}
+
+/* 타이틀 & 데이터 행 */
+.tableHeader,
+.tableRow {
+  display: flex;
+  align-items: center;
+  /* ① 타이틀 밑줄을 두껍게: 2px로 올려서 강조 */
+  border-bottom: 2px solid #ccc;
+}
+.tableHeader {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+.tableRow {
+  height: 40px;
+  border-bottom: 1px solid #eee;
+}
+
+/* 칸별 폭 & 정렬 */
+/* 조 */
+.tableHeader .cell:nth-child(1),
+.tableRow .cell:nth-child(1) {
+  flex: 0 0 40px;
+  text-align: center;
+}
+
+/* 닉네임 (넉넉히 → flex:2) */
+.tableHeader .cell:nth-child(2),
+.tableRow .cell:nth-child(2) {
+  flex: 2;
+  text-align: center; /* 중앙정렬 */
+}
+
+/* G핸디 (좁고 우측정렬) */
+.tableHeader .cell:nth-child(3),
+.tableRow .cell:nth-child(3) {
+  flex: 0 0 50px;
+  text-align: right;
+  padding-right: 8px;
+}
+
+/* 수동 / 강제 (좁게 → flex 50px, 버튼 우측정렬) */
+.tableHeader .cell:nth-child(4),
+.tableRow .cell:nth-child(4),
+.tableHeader .cell:nth-child(5),
+.tableRow .cell:nth-child(5) {
+  flex: 0 0 50px;
+  text-align: right;
+  padding-right: 8px;
+}
+
+/* 공통 cell 기본 */
+.cell {
+  padding: 0 8px;
+}
+
+/* ② 수동/강제 버튼 작게 & 우측으로 몰기 */
+.smallBtn {
+  width: auto;
+  margin-left: auto;
+  padding: 0 8px;
+  height: 28px;
+  font-size: 14px;
+  line-height: 28px;
+  background: #fff;
+  border: 1px solid #ccc;
+  color: #007bff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.smallBtn:hover {
+  background: #f0f0f0;
+}
+.smallBtn:active {
+  background: #e0e0e0;
+}
+
+/* 하단 내비게이션 & 작업 버튼 */
+.stepFooter {
+  display: flex;
+  gap: 8px;
+  margin: auto 8px 8px;
+}
+.stepFooter button {
+  flex: 1;
+  height: 40px;
+  line-height: 40px;
+  padding: 0;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.stepFooter button:hover {
+  background: #e0e0e0;
+}
+.stepFooter button:active {
+  background: #d0d0d0;
+}
+
+/* ③ 자동배정/초기화: 배경 없고 파랑 글씨 (4페이지 모드·추가 버튼과 동일) */
+.textOnly {
+  background: #fff;
+  color: #007bff;
+  border: 1px solid #ccc;
+}
+.textOnly:hover {
+  background: #f0f0f0;
+}
+.textOnly:active {
+  background: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}

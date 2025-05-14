@@ -5,6 +5,7 @@ import Step1ModeTitle    from './components/Step1ModeTitle';
 import Step2RoomSetup    from './components/Step2RoomSetup';
 import Step3UploadType   from './components/Step3UploadType';
 import Step4Participant  from './components/Step4Participant';
+import Step5StrokeAssign from './components/Step5StrokeAssign'; // ← 추가
 import './App.css';
 
 export default function App() {
@@ -55,6 +56,9 @@ export default function App() {
     reader.readAsBinaryString(file);
   };
 
+  // 방 번호 리스트 생성
+  const rooms = Array.from({ length: roomCount }, (_, i) => i + 1);
+
   return (
     <div className="app-container">
       {step === 1 && (
@@ -88,10 +92,23 @@ export default function App() {
           uploadMethod={uploadMethod}
           participants={participants} setParticipants={setParticipants}
           roomCount={roomCount}
-          handleFile={handleFile}               // ← 이걸 넘겨줍니다
+          handleFile={handleFile}
           setStep={setStep}
         />
       )}
+      {step === 5 && (
+        <Step5StrokeAssign
+          step={5}
+          participants={participants}
+          rooms={rooms}
+          onAutoAssign={() => {/* TODO: 스트로크 자동 배정 로직 호출 */}}
+          onManualAssign={(id, room) => {/* TODO: 수동 배정 로직 */}}
+          onForceAssign={() => {/* TODO: 강제 배정 로직 */}}
+          onPrev={() => setStep(4)}
+          onNext={() => setStep(6)}
+        />
+      )}
+      {/* 이후 Step6~Step8은 이와 비슷하게 분기 추가 예정 */}
     </div>
   );
 }
