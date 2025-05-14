@@ -24,26 +24,27 @@
 
 /* 2차 헤더: 파일 선택 / 총 슬롯 */
 .excelHeader {
-  position: relative;            /* ← 추가 */
+  position: relative;
   display: flex;
   align-items: center;
-  /* 공간 분배 제거: absolute 로 total 위치 고정 */
-  margin: 0 0 8px 0;
-  padding: 0 8px 8px;
+  justify-content: space-between;
+  /* 상단 여백과 파일선택 버튼 아래 공간을 원본과 통일 */
+  margin: 8px 0 8px 0;       /* ← margin-top:8px */
+  padding: 8px 8px 8px;      /* ← padding-top:8px */
   border-bottom: 1px solid #ccc;
   background: #f7f7f7;
   font-weight: normal;
 }
 
 .manual {
-  /* 파일 선택 그룹(좌측) - 원본대로 flex:0 1 auto */
+  /* 좌측 파일선택 그룹 - 원본 유지 */
 }
 
 .total {
-  position: absolute;            /* ← 추가 */
-  right: 8px;                    /* ← 컨테이너 안쪽 여백과 맞춤 */
-  top: 50%;                      /* ← 수직 중앙 정렬 */
-  transform: translateY(-50%);   /* ← 수직 중앙 정렬 */
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 14px;
   font-weight: normal;
   white-space: nowrap;
@@ -53,7 +54,7 @@
 /* 3차 헤더: 컬럼 타이틀 */
 .participantRowHeader {
   display: flex;
-  gap: 8px; /* 칸 간격 */
+  gap: 8px;
   margin: 0 0 8px 0;
   padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
@@ -63,11 +64,11 @@
 
 /* 헤더 칸별 flex 비율 */
 .participantRowHeader .group    { flex: 0 0 40px; }
-.participantRowHeader .nickname { flex: 2;       /* ← 키움 */ }
-.participantRowHeader .handicap { flex: 0 0 50px; /* ← 줄임 */ }
+.participantRowHeader .nickname { flex: 2.5;     /* ← 키움 */ }
+.participantRowHeader .handicap { flex: 0 0 50px; }
 .participantRowHeader .delete   { flex: 0 0 40px; }
 
-/* ‘선택’ 글자만 작게 */
+/* ‘선택’ 타이틀만 글자 크기 축소 */
 .participantRowHeader .delete {
   font-size: 12px;
 }
@@ -95,15 +96,15 @@
 .participantRow {
   display: flex;
   align-items: center;
-  gap: 8px; /* 각 칸 간격 */
+  gap: 8px;
   border-bottom: 1px solid #eee;
   height: 40px;
 }
 
 /* 리스트 칸별 flex 비율 */
 .participantRow .group    { flex: 0 0 40px; }
-.participantRow .nickname { flex: 2;       /* ← 키움 */ }
-.participantRow .handicap { flex: 0 0 50px; /* ← 줄임 */ }
+.participantRow .nickname { flex: 2.5;     /* ← 키움 */ }
+.participantRow .handicap { flex: 0 0 50px; }
 .participantRow .delete   { flex: 0 0 40px; }
 
 /* 공통 cell 스타일 */
@@ -115,22 +116,14 @@
   white-space: nowrap;
 }
 
-/* 닉네임 입력 박스 */
-.nickname input {
-  width: 100%;
-  padding: 4px;
-  box-sizing: border-box;
-  text-align: center;
-  font-size: 16px;  /* 크게 */
-}
-
-/* G핸디 입력 박스 */
+/* 닉네임 / G핸디 입력 박스 */
+.nickname input,
 .handicap input {
   width: 100%;
   padding: 4px;
   box-sizing: border-box;
   text-align: center;
-  font-size: 16px;  /* 닉네임과 동일하게 크게 */
+  font-size: 16px;
 }
 
 /* ──────────── 하단 버튼 (40px 높이 유지) ──────────── */
@@ -161,7 +154,7 @@
   background: #e0e0e0;
 }
 
-/* 이전/다음 (회색) & 추가/삭제 (파랑) 버튼 스타일 원본 유지 */
+/* 이전/다음(회색) & 추가/삭제(파랑) 버튼 스타일 원본 유지 */
 .stepFooter button:first-child,
 .stepFooter button:last-child {
   background: #f0f0f0;
