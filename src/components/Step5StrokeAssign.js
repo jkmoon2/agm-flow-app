@@ -3,13 +3,14 @@ import React from 'react';
 import styles from './Step5StrokeAssign.module.css';
 
 export default function Step5StrokeAssign({
-  participants,      // [{ id, group, nickname, handicap, selected }, …]
-  onAutoAssign,      // () => void
-  onReset,           // () => void
-  onManualAssign,    // (id: string) => void
-  onForceAssign,     // (id: string) => void
-  onPrev,            // () => void
-  onNext             // () => void
+  participants,      // [{ id, group, nickname, handicap, score }, …]
+  onScoreChange = () => {},
+  onManualAssign = () => {},
+  onForceAssign = () => {},
+  onPrev = () => {},
+  onAutoAssign = () => {},
+  onReset = () => {},
+  onNext = () => {}
 }) {
   return (
     <div className={styles.step}>
@@ -18,34 +19,42 @@ export default function Step5StrokeAssign({
         <h3>5. 스트로크 방배정</h3>
       </div>
 
-      {/* 중간 스크롤 영역 */}
-      <div className={styles.tableContainer}>
-        {/* 타이틀 행 */}
-        <div className={styles.tableHeader}>
-          <div className={styles.cell}>조</div>
-          <div className={styles.cell}>닉네임</div>
-          <div className={styles.cell}>G핸디</div>
-          <div className={styles.cell}>수동</div>
-          <div className={styles.cell}>강제</div>
-        </div>
-        {/* 데이터 행 */}
+      {/* 3차 헤더: 조 / 닉네임 / G핸디 / 점수 / 수동 / 강제 */}
+      <div className={styles.participantRowHeader}>
+        <div className={`${styles.cell} ${styles.group}`}>조</div>
+        <div className={`${styles.cell} ${styles.nickname}`}>닉네임</div>
+        <div className={`${styles.cell} ${styles.handicap}`}>G핸디</div>
+        <div className={`${styles.cell} ${styles.score}`}>점수</div>
+        <div className={`${styles.cell} ${styles.manual}`}>수동</div>
+        <div className={`${styles.cell} ${styles.force}`}>강제</div>
+      </div>
+
+      {/* 리스트 영역 (스크롤) */}
+      <div className={styles.participantTable}>
         {participants.map(p => (
-          <div className={styles.tableRow} key={p.id}>
-            <div className={styles.cell}>{p.group}조</div>
-            <div className={styles.cell}>{p.nickname}</div>
-            <div className={styles.cell}>{p.handicap}</div>
-            <div className={styles.cell}>
+          <div className={styles.participantRow} key={p.id}>
+            <div className={`${styles.cell} ${styles.group}`}>{p.group}조</div>
+            <div className={`${styles.cell} ${styles.nickname}`}>{p.nickname}</div>
+            <div className={`${styles.cell} ${styles.handicap}`}>{p.handicap}</div>
+            <div className={`${styles.cell} ${styles.score}`}>
+              <input
+                type="number"
+                value={p.score ?? ''}
+                onChange={e => onScoreChange(p.id, e.target.value)}
+              />
+            </div>
+            <div className={`${styles.cell} ${styles.manual}`}>
               <button
-                onClick={() => onManualAssign(p.id)}
                 className={styles.smallBtn}
+                onClick={() => onManualAssign(p.id)}
               >
                 수동
               </button>
             </div>
-            <div className={styles.cell}>
+            <div className={`${styles.cell} ${styles.force}`}>
               <button
-                onClick={() => onForceAssign(p.id)}
                 className={styles.smallBtn}
+                onClick={() => onForceAssign(p.id)}
               >
                 강제
               </button>

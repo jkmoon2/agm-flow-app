@@ -6,83 +6,79 @@
   height: 100%;
 }
 
-/* 상단 제목 */
+/* 1차 헤더: 제목 */
 .stepHeader {
-  margin: 0 0 4px 0;
+  margin: 0 0 8px 0;
 }
 .stepHeader h3 {
   margin: 0;
   font-size: 18px;
   text-align: center;
-  padding-bottom: 4px;
+  padding-bottom: 8px;
   border-bottom: 1px solid #ccc;
 }
 
-/* 중간 스크롤 영역 */
-.tableContainer {
+/* 3차 헤더: 컬럼 타이틀 */
+.participantRowHeader {
+  display: flex;
+  margin: 0 0 8px 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #ccc;
+  background: #f7f7f7;
+  font-weight: 600;
+  gap: 0;
+}
+
+/* 칸별 flex 비율 */
+.group    { flex: 0 0 40px; }
+.nickname { flex: 1.2;     }
+.handicap { flex: 0 0 60px; }
+.score    { flex: 0 0 60px; }
+.manual   { flex: 0 0 60px; }
+.force    { flex: 0 0 60px; }
+
+/* header 셀 기본 */
+.participantRowHeader .cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+/* 리스트 영역 */
+.participantTable {
   flex: 1;
   overflow-y: auto;
   background: #fff;
 }
 
-/* 타이틀 & 데이터 행 */
-.tableHeader,
-.tableRow {
+/* 각 데이터 행 */
+.participantRow {
   display: flex;
   align-items: center;
-  /* ① 타이틀 밑줄을 두껍게: 2px로 올려서 강조 */
-  border-bottom: 2px solid #ccc;
-}
-.tableHeader {
-  background: #f7f7f7;
-  font-weight: 600;
-}
-.tableRow {
-  height: 40px;
   border-bottom: 1px solid #eee;
+  height: 40px;
 }
 
-/* 칸별 폭 & 정렬 */
-/* 조 */
-.tableHeader .cell:nth-child(1),
-.tableRow .cell:nth-child(1) {
-  flex: 0 0 40px;
+/* row 셀 기본 */
+.participantRow .cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 닉네임/점수 필드에서 input */
+.participantRow .cell input {
+  width: 100%;
+  height: 28px;
+  padding: 0 4px;
+  font-size: 14px;
   text-align: center;
+  box-sizing: border-box;
 }
 
-/* 닉네임 (넉넉히 → flex:2) */
-.tableHeader .cell:nth-child(2),
-.tableRow .cell:nth-child(2) {
-  flex: 2;
-  text-align: center; /* 중앙정렬 */
-}
-
-/* G핸디 (좁고 우측정렬) */
-.tableHeader .cell:nth-child(3),
-.tableRow .cell:nth-child(3) {
-  flex: 0 0 50px;
-  text-align: right;
-  padding-right: 8px;
-}
-
-/* 수동 / 강제 (좁게 → flex 50px, 버튼 우측정렬) */
-.tableHeader .cell:nth-child(4),
-.tableRow .cell:nth-child(4),
-.tableHeader .cell:nth-child(5),
-.tableRow .cell:nth-child(5) {
-  flex: 0 0 50px;
-  text-align: right;
-  padding-right: 8px;
-}
-
-/* 공통 cell 기본 */
-.cell {
-  padding: 0 8px;
-}
-
-/* ② 수동/강제 버튼 작게 & 우측으로 몰기 */
+/* 수동/강제 버튼 (작고 우측정렬) */
 .smallBtn {
-  width: auto;
   margin-left: auto;
   padding: 0 8px;
   height: 28px;
@@ -127,11 +123,11 @@
   background: #d0d0d0;
 }
 
-/* ③ 자동배정/초기화: 배경 없고 파랑 글씨 (4페이지 모드·추가 버튼과 동일) */
+/* 자동배정 / 초기화 버튼 (4페이지 추가/삭제와 동일) */
 .textOnly {
   background: #fff;
   color: #007bff;
-  border: 1px solid #ccc;
+  border-color: #007bff;
 }
 .textOnly:hover {
   background: #f0f0f0;
