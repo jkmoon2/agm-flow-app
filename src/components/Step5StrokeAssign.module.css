@@ -15,33 +15,34 @@
   font-size: 18px;
   text-align: center;
   padding-bottom: 8px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid #ccc; /* 4페이지와 동일 */
 }
 
-/* 3차 헤더: 조/닉네임/G핸디/점수/수동/강제 */
+/* 3차 헤더: 컬럼 타이틀 */
 .participantRowHeader {
   display: flex;
   align-items: center;
-  margin: 0 0 8px 0;
-  border-bottom: 2px solid #ccc; /* 타이틀 라인 두껍게 */
+  margin: 0 0 4px 0;
+  padding: 0;
+  border-bottom: 1px solid #ccc; /* 4페이지와 동일 */
   background: #f7f7f7;
   font-weight: 600;
 }
 .participantRowHeader .cell {
+  font-size: 14px;
+  padding: 4px 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
-  padding: 8px 0;
+  white-space: nowrap;
 }
-
-/* flex 분배 */
-.group    { flex: 0 0 40px; }
-.nickname { flex: 2.5;     text-align: left;  padding-left: 8px; }
-.handicap { flex: 0 0 40px; }
-.score    { flex: 0 0 40px; }
-.manual   { flex: 0 0 40px; }
-.force    { flex: 0 0 40px; }
+/* flex 분배: 조/G핸디/점수 축소, 닉네임 확대 */
+.participantRowHeader .cell:nth-child(1) { flex: 0 0 24px; }
+.participantRowHeader .cell:nth-child(2) { flex: 5; text-align: left; padding-left: 8px; }
+.participantRowHeader .cell:nth-child(3),
+.participantRowHeader .cell:nth-child(4) { flex: 0 0 24px; }
+.participantRowHeader .cell:nth-child(5),
+.participantRowHeader .cell:nth-child(6) { flex: 0 0 24px; }
 
 /* 리스트 영역 */
 .participantTable {
@@ -50,12 +51,12 @@
   background: #fff;
 }
 
-/* 각 데이터 행 */
+/* 데이터 행 */
 .participantRow {
   display: flex;
   align-items: center;
   border-bottom: 1px solid #eee;
-  height: 40px;
+  height: 32px;
 }
 .participantRow .cell {
   display: flex;
@@ -64,25 +65,34 @@
   padding: 0 8px;
 }
 
-/* “조/닉네임/G핸디” 비활성화 입력 박스 */
-.participantRow .group input,
-.participantRow .nickname input,
-.participantRow .handicap input {
+/* 입력 박스: 조/G핸디 disabled */
+.participantRow .cell:nth-child(1) input,
+.participantRow .cell:nth-child(3) input {
   width: 100%;
-  height: 28px;
-  padding: 0 4px;
+  height: 24px;
+  padding: 0 2px;
   font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
   background: #f7f7f7;
   box-sizing: border-box;
 }
-
-/* 점수 입력 박스 */
-.participantRow .score input {
+/* 닉네임 박스 */
+.participantRow .cell:nth-child(2) input {
   width: 100%;
-  height: 28px;
+  height: 24px;
   padding: 0 4px;
+  font-size: 14px;
+  text-align: left;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
+  box-sizing: border-box;
+}
+/* 점수 입력박스 */
+.participantRow .cell:nth-child(4) input {
+  width: 100%;
+  height: 24px;
+  padding: 0 2px;
   font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
@@ -90,26 +100,26 @@
   box-sizing: border-box;
 }
 
-/* 수동/강제 버튼 */
-.participantRow .manual button,
-.participantRow .force button {
+/* 수동/강제 버튼 축소 */
+.participantRow .cell:nth-child(5) button,
+.participantRow .cell:nth-child(6) button {
   margin-left: auto;
-  padding: 0 8px;
-  height: 28px;
-  font-size: 14px;
-  line-height: 28px;
+  padding: 0 4px;
+  height: 24px;
+  font-size: 12px;
+  line-height: 24px;
   background: #fff;
   border: 1px solid #ccc;
   color: #007bff;
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.participantRow .manual button:hover,
-.participantRow .force button:hover {
+.participantRow .cell:nth-child(5) button:hover,
+.participantRow .cell:nth-child(6) button:hover {
   background: #f0f0f0;
 }
-.participantRow .manual button:active,
-.participantRow .force button:active {
+.participantRow .cell:nth-child(5) button:active,
+.participantRow .cell:nth-child(6) button:active {
   background: #e0e0e0;
 }
 
@@ -121,8 +131,8 @@
 }
 .stepFooter button {
   flex: 1;
-  height: 40px;
-  line-height: 40px;
+  height: 36px;
+  line-height: 36px;
   padding: 0;
   font-size: 14px;
   text-align: center;
@@ -132,12 +142,8 @@
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.stepFooter button:hover {
-  background: #e0e0e0;
-}
-.stepFooter button:active {
-  background: #d0d0d0;
-}
+.stepFooter button:hover { background: #e0e0e0; }
+.stepFooter button:active { background: #d0d0d0; }
 
 /* 자동배정/초기화 텍스트 버튼 */
 .textOnly {
@@ -145,9 +151,7 @@
   color: #007bff;
   border-color: #007bff;
 }
-.textOnly:hover {
-  background: #f0f0f0;
-}
+.textOnly:hover { background: #f0f0f0; }
 .textOnly:active {
   background: #007bff;
   color: #fff;
