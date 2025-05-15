@@ -18,32 +18,30 @@
   border-bottom: 1px solid #ccc;
 }
 
-/* 3차 헤더: 컬럼 타이틀 */
+/* 3차 헤더: 조/닉네임/G핸디/점수/수동/강제 */
 .participantRowHeader {
   display: flex;
+  align-items: center;
   margin: 0 0 8px 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 2px solid #ccc; /* 타이틀 라인 두껍게 */
   background: #f7f7f7;
   font-weight: 600;
-  gap: 0;
 }
-
-/* 칸별 flex 비율 */
-.group    { flex: 0 0 40px; }
-.nickname { flex: 1.2;     }
-.handicap { flex: 0 0 60px; }
-.score    { flex: 0 0 60px; }
-.manual   { flex: 0 0 60px; }
-.force    { flex: 0 0 60px; }
-
-/* header 셀 기본 */
 .participantRowHeader .cell {
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  padding: 8px 0;
 }
+
+/* flex 분배 */
+.group    { flex: 0 0 40px; }
+.nickname { flex: 2.5;     text-align: left;  padding-left: 8px; }
+.handicap { flex: 0 0 40px; }
+.score    { flex: 0 0 40px; }
+.manual   { flex: 0 0 40px; }
+.force    { flex: 0 0 40px; }
 
 /* 리스트 영역 */
 .participantTable {
@@ -59,26 +57,42 @@
   border-bottom: 1px solid #eee;
   height: 40px;
 }
-
-/* row 셀 기본 */
 .participantRow .cell {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 8px;
 }
 
-/* 닉네임/점수 필드에서 input */
-.participantRow .cell input {
+/* “조/닉네임/G핸디” 비활성화 입력 박스 */
+.participantRow .group input,
+.participantRow .nickname input,
+.participantRow .handicap input {
   width: 100%;
   height: 28px;
   padding: 0 4px;
   font-size: 14px;
   text-align: center;
+  border: 1px solid #ccc;
+  background: #f7f7f7;
   box-sizing: border-box;
 }
 
-/* 수동/강제 버튼 (작고 우측정렬) */
-.smallBtn {
+/* 점수 입력 박스 */
+.participantRow .score input {
+  width: 100%;
+  height: 28px;
+  padding: 0 4px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+/* 수동/강제 버튼 */
+.participantRow .manual button,
+.participantRow .force button {
   margin-left: auto;
   padding: 0 8px;
   height: 28px;
@@ -90,14 +104,16 @@
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.smallBtn:hover {
+.participantRow .manual button:hover,
+.participantRow .force button:hover {
   background: #f0f0f0;
 }
-.smallBtn:active {
+.participantRow .manual button:active,
+.participantRow .force button:active {
   background: #e0e0e0;
 }
 
-/* 하단 내비게이션 & 작업 버튼 */
+/* 하단 버튼 */
 .stepFooter {
   display: flex;
   gap: 8px;
@@ -123,7 +139,7 @@
   background: #d0d0d0;
 }
 
-/* 자동배정 / 초기화 버튼 (4페이지 추가/삭제와 동일) */
+/* 자동배정/초기화 텍스트 버튼 */
 .textOnly {
   background: #fff;
   color: #007bff;

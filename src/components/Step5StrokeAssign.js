@@ -3,23 +3,23 @@ import React from 'react';
 import styles from './Step5StrokeAssign.module.css';
 
 export default function Step5StrokeAssign({
-  participants,      // [{ id, group, nickname, handicap, score }, …]
-  onScoreChange = () => {},
-  onManualAssign = () => {},
-  onForceAssign = () => {},
-  onPrev = () => {},
-  onAutoAssign = () => {},
-  onReset = () => {},
-  onNext = () => {}
+  participants,      // [{id, group, nickname, handicap, score}, …]
+  onScoreChange,     // (id, value) => void
+  onManualAssign,    // (id) => void
+  onForceAssign,     // (id) => void
+  onPrev,            // () => void
+  onAutoAssign,      // () => void
+  onReset,           // () => void
+  onNext             // () => void
 }) {
   return (
     <div className={styles.step}>
-      {/* 상단 제목 */}
+      {/* 1차 헤더 */}
       <div className={styles.stepHeader}>
         <h3>5. 스트로크 방배정</h3>
       </div>
 
-      {/* 3차 헤더: 조 / 닉네임 / G핸디 / 점수 / 수동 / 강제 */}
+      {/* 3차 헤더 */}
       <div className={styles.participantRowHeader}>
         <div className={`${styles.cell} ${styles.group}`}>조</div>
         <div className={`${styles.cell} ${styles.nickname}`}>닉네임</div>
@@ -29,13 +29,19 @@ export default function Step5StrokeAssign({
         <div className={`${styles.cell} ${styles.force}`}>강제</div>
       </div>
 
-      {/* 리스트 영역 (스크롤) */}
+      {/* 리스트 영역 */}
       <div className={styles.participantTable}>
         {participants.map(p => (
           <div className={styles.participantRow} key={p.id}>
-            <div className={`${styles.cell} ${styles.group}`}>{p.group}조</div>
-            <div className={`${styles.cell} ${styles.nickname}`}>{p.nickname}</div>
-            <div className={`${styles.cell} ${styles.handicap}`}>{p.handicap}</div>
+            <div className={`${styles.cell} ${styles.group}`}>
+              <input type="text" value={`${p.group}조`} disabled />
+            </div>
+            <div className={`${styles.cell} ${styles.nickname}`}>
+              <input type="text" value={p.nickname} disabled />
+            </div>
+            <div className={`${styles.cell} ${styles.handicap}`}>
+              <input type="text" value={p.handicap} disabled />
+            </div>
             <div className={`${styles.cell} ${styles.score}`}>
               <input
                 type="number"
@@ -63,7 +69,7 @@ export default function Step5StrokeAssign({
         ))}
       </div>
 
-      {/* 하단 내비게이션 & 작업 버튼 */}
+      {/* 하단 버튼 */}
       <div className={styles.stepFooter}>
         <button onClick={onPrev}>← 이전</button>
         <button onClick={onAutoAssign} className={styles.textOnly}>
