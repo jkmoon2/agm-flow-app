@@ -1,62 +1,155 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
-import * as XLSX from 'xlsx';                           // ← 추가
-import Step1ModeTitle    from './components/Step1ModeTitle';
-import Step2RoomSetup    from './components/Step2RoomSetup';
-import Step3UploadType   from './components/Step3UploadType';
-import Step4Participant  from './components/Step4Participant';
-import Step5StrokeAssign from './components/Step5StrokeAssign'; // ← 추가
+import * as XLSX from 'xlsx';
+
+import Step1ModeTitle      from './components/Step1ModeTitle';
+import Step2RoomSetup      from './components/Step2RoomSetup';
+import Step3UploadType     from './components/Step3UploadType';
+import Step4Participant    from './components/Step4Participant';
+import Step5StrokeAssign   from './components/Step5StrokeAssign';
+import Step6StrokeResults  from './components/Step6StrokeResults';
+
 import './App.css';
 
 export default function App() {
-  const [step, setStep]                 = useState(1);
-  const [mode, setMode]                 = useState('stroke');
-  const [title, setTitle]               = useState('');
-  const [roomCount, setRoomCount]       = useState(4);
-  const [roomNames, setRoomNames]       = useState(Array(roomCount).fill(''));
+  const [step, setStep] = useState(1);
+
+  // 1~4단계 공통 상태
+  const [mode, setMode]             = useState('stroke');
+  const [title, setTitle]           = useState('');
+  const [roomCount, setRoomCount]   = useState(4);
+  const [roomNames, setRoomNames]   = useState(Array(4).fill(''));
   const [uploadMethod, setUploadMethod] = useState('');
+
+  // 참가자 목록: { id, group, nickname, handicap, score, room }
   const [participants, setParticipants] = useState([]);
 
-  // roomCount 변경 시 방 이름 초기화
+  // 방 개수 변경 시 이름 초기화
   useEffect(() => {
     setRoomNames(Array(roomCount).fill(''));
   }, [roomCount]);
 
-  // 수동 입력 모드 진입 시 슬롯만큼 빈 참가자 세팅
+  // 3단계 수동 진입: 빈 slot 세팅
   const initManual = () => {
     setParticipants(
-      Array.from({ length: roomCount * 4 }, () => ({
-        group: 1, nickname: '', handicap: 0, selected: false
+      Array.from({ length: roomCount * 4 }, (_, i) => ({
+        id:       i,
+        group:    1,
+        nickname: '',
+        handicap: 0,
+        score:    null,
+        room:     null,
       }))
     );
   };
 
-  // ← 여기를 실제 파일 읽기/파싱 로직으로 교체
-  const handleFile = (e) => {
+  // 3단계 엑셀 업로드
+  const handleFile = e => {
     const file = e.target.files[0];
     if (!file) return;
-
     const reader = new FileReader();
-    reader.onload = (evt) => {
-      const data = evt.target.result;
-      // 바이너리 스트링으로 읽어서 워크북 생성
-      const workbook = XLSX.read(data, { type: 'binary' });
-      const sheetName = workbook.SheetNames[0];
-      const ws = workbook.Sheets[sheetName];
-      // 행 단위 배열로 변환 (첫 줄 헤더, 두 번째 줄부터 데이터)
-      const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      const parsed = rows.slice(1).map((row) => ({
-        group:   Number(row[0]) || 1,       // A열: 조
-        nickname: row[1]   || '',          // B열: 닉네임
-        handicap: Number(row[2])|| 0,       // C열: G핸디
-        selected: false
+    reader.onload = evt => {
+      const wb = XLSX.read(evt.target.result, { type: 'binary' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      const rows = data.slice(1).map(r => ({
+        group:    Number(r[0])    || 1,
+        nickname:            r[1] || '',
+        handicap: Number(r[2])    || 0,
       }));
-      setParticipants(parsed);
+      setParticipants(
+        rows.map((p, i) => ({
+          id:       i,
+          group:    p.group,
+          nickname: p.nickname,
+          handicap: p.handicap,
+          score:    null,
+          room:     null,
+        }))
+      );
     };
     reader.readAsBinaryString(file);
   };
 
-  // 방 번호 리스트 생성
+  // 5단계: 점수 입력
+  const handleScoreChange = (id, value) => {
+    setParticipants(prev =>
+      prev.map(p =>
+        p.id === id
+          ? { ...p, score: value === '' ? null : Number(value) }
+          : p
+      )
+    );
+  };
+
+  // 5단계: 수동 배정
+  const handleManualAssign = id => {
+    const p = participants.find(x => x.id === id);
+    if (!p || !p.group) return;
+    // 이미 배정된 같은 조 슬롯 수집
+    const occupied = participants
+      .filter(x => x.room !== null && x.group === p.group)
+      .map(x => x.room);
+    // 빈 방 후보
+    const candidates = Array.from({ length: roomCount }, (_, i) => i + 1)
+      .filter(r => !occupied.includes(r));
+    if (!candidates.length) return;
+    const choice = candidates[Math.floor(Math.random() * candidates.length)];
+    // 애니메이션 대기 후 실제 반영
+    setTimeout(() => {
+      alert(`${p.nickname} → ${roomNames[choice - 1]} 방배정 완료`);
+      setParticipants(prev =>
+        prev.map(x => x.id === id ? { ...x, room: choice } : x)
+      );
+    }, 800);
+  };
+
+  // 5단계: 강제 배정
+  const handleForceAssign = id => {
+    const p = participants.find(x => x.id === id);
+    const choice = Number(prompt(`몇 번 방으로 강제 이동하시겠습니까? (1~${roomCount})`));
+    if (!p || !choice || choice < 1 || choice > roomCount) return;
+    setParticipants(prev =>
+      prev.map(x => x.id === id ? { ...x, room: choice } : x)
+    );
+    alert(`${p.nickname} → ${roomNames[choice - 1]} 강제 배정 완료`);
+  };
+
+  // 5단계: 자동 배정 (스트로크 방식)
+  const handleAutoAssign = () => {
+    // 1) 이미 배정된 사람 제외하고
+    const already = participants.filter(p => p.room !== null).map(p => p.id);
+
+    // 2) 그룹별로 남은 사람 ID 리스트
+    const byGroup = {};
+    participants.forEach(p => {
+      if (p.room === null && p.group >= 1 && p.group <= 4) {
+        (byGroup[p.group] ||= []).push(p.id);
+      }
+    });
+
+    // 3) 방마다 한 명씩 뽑아서 무작위 배정
+    //    → 1조 멤버를 1번 방부터 순서대로, 2조도 마찬가지
+    const shuffle = arr => arr.sort(() => Math.random() - 0.5);
+
+    // 4) 새 participants 복사
+    let updated = [...participants];
+
+    Object.keys(byGroup).forEach(groupKey => {
+      const grp = shuffle(byGroup[groupKey]);
+      grp.forEach((pid, idx) => {
+        // 방 인덱스 순환: 1조 인원들은 방1,방2,방3... 순서
+        const roomNum = (idx % roomCount) + 1;
+        updated = updated.map(x =>
+          x.id === pid ? { ...x, room: roomNum } : x
+        );
+      });
+    });
+
+    setParticipants(updated);
+  };
+
+  // 방 번호 배열
   const rooms = Array.from({ length: roomCount }, (_, i) => i + 1);
 
   return (
@@ -69,6 +162,7 @@ export default function App() {
           setStep={setStep}
         />
       )}
+
       {step === 2 && (
         <Step2RoomSetup
           step={2}
@@ -77,6 +171,7 @@ export default function App() {
           setStep={setStep}
         />
       )}
+
       {step === 3 && (
         <Step3UploadType
           step={3}
@@ -85,6 +180,7 @@ export default function App() {
           setStep={setStep}
         />
       )}
+
       {step === 4 && (
         <Step4Participant
           step={4}
@@ -96,19 +192,31 @@ export default function App() {
           setStep={setStep}
         />
       )}
+
       {step === 5 && (
         <Step5StrokeAssign
           step={5}
           participants={participants}
           rooms={rooms}
-          onAutoAssign={() => {/* TODO: 스트로크 자동 배정 로직 호출 */}}
-          onManualAssign={(id, room) => {/* TODO: 수동 배정 로직 */}}
-          onForceAssign={() => {/* TODO: 강제 배정 로직 */}}
+          onScoreChange={handleScoreChange}
+          onManualAssign={handleManualAssign}
+          onForceAssign={handleForceAssign}
+          onAutoAssign={handleAutoAssign}
+          onReset={initManual}
           onPrev={() => setStep(4)}
           onNext={() => setStep(6)}
         />
       )}
-      {/* 이후 Step6~Step8은 이와 비슷하게 분기 추가 예정 */}
+
+      {step === 6 && (
+        <Step6StrokeResults
+          participants={participants}
+          roomNames={roomNames}
+          roomCount={roomCount}
+          onPrev={() => setStep(5)}
+          onNext={() => setStep(mode === 'stroke' ? 7 : 8)}
+        />
+      )}
     </div>
   );
 }

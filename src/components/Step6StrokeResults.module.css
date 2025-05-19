@@ -1,0 +1,153 @@
+/* src/components/Step6StrokeResults.module.css */
+
+/* 전체 컨테이너 */
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* 1차 헤더 */
+.stepHeader {
+  margin: 0 0 4px 0;
+}
+.stepHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  text-align: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* 테이블 컨테이너: 위쪽 여백, 가로 스크롤 */
+.tableContainer {
+  margin: 8px 6px;
+  flex: 1;               /* 남은 높이 차지 */
+  overflow-x: auto;      /* 가로 스크롤 */
+  background: #fff;
+  border: 1px solid #ddd;
+  position: relative;    /* sticky 기준 */
+}
+
+/* 표 제목: 좌측 정렬 + 고정 */
+.tableContainer .tableTitle {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: #fff;
+  padding: 6px 8px;
+  font-size: 16px;
+  color: #333;
+  text-align: left;
+  margin: 0;
+}
+
+/* 공통 표 스타일 */
+.table {
+  border-collapse: collapse;
+  width: auto;
+  min-width: max-content; /* 콘텐츠 너비에 맞춤 */
+  table-layout: auto;
+}
+
+/* 헤더 셀 */
+.header {
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  padding: 4px 8px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* 일반 셀 */
+.cell {
+  border: 1px solid #eee;
+  padding: 4px 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 요약(합계/순위) 셀 */
+.footerLabel,
+.footerValue,
+.footerBanddang,
+.footerResult,
+.footerRank {
+  border: 1px solid #eee;
+  padding: 4px 8px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* 기본 컬러 */
+.footerValue { color: #000; }
+.footerBanddang { color: blue; }
+.footerResult { color: red; }
+
+/* ─────────────── 색상 오버라이드 ─────────────── */
+
+/* 1) 방배정표(두 번째 자식 tableContainer):
+   - 기본 모든 셀 검정
+   - G핸디 열(짝수 열)만 파랑 */
+.step > .tableContainer:nth-child(2) .table tbody tr > td,
+.step > .tableContainer:nth-child(2) .table tfoot tr > td {
+  color: #000 !important;
+}
+.step > .tableContainer:nth-child(2) .table tbody tr > td:nth-child(2n),
+.step > .tableContainer:nth-child(2) .table tfoot tr > td:nth-child(2n) {
+  color: blue !important;
+}
+
+/* 2) 최종결과표(세 번째 자식 tableContainer):
+   - 기본 모든 셀 검정
+   - “반땅” 열(4번째)만 파랑
+   - “결과” 열(5번째)만 빨강
+   - “등수”(최종결과표 푸터의 마지막 열)는 글자만 파랑, 배경은 그대로 */
+.step > .tableContainer:nth-child(3) .table tbody tr > td,
+.step > .tableContainer:nth-child(3) .table tfoot tr > td {
+  color: #000 !important;
+}
+.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n+4),
+.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n+4) {
+  color: blue !important;
+}
+.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n),
+.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n) {
+  color: red !important;
+}
+/* 등수만 파랑(푸터 마지막 열) */
+.step > .tableContainer:nth-child(3) .table tfoot tr > td.footerRank {
+  color: blue !important;
+  background: transparent !important;
+}
+
+/* ─────────────────────────────────────────────────── */
+
+/* 하단 버튼 */
+.stepFooter {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+}
+.stepFooter button {
+  flex: 1;
+  height: 36px;
+  line-height: 36px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.stepFooter button:hover {
+  background: #e0e0e0;
+}
+.stepFooter button:active {
+  background: #d0d0d0;
+}
