@@ -1,3 +1,4 @@
+// src/App.js
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
@@ -16,24 +17,24 @@ function shuffle(arr) {
 }
 
 export default function App() {
-  const [step, setStep]               = useState(1);
-  const [mode, setMode]               = useState('stroke');
-  const [title, setTitle]             = useState('');
-  const [roomCount, setRoomCount]     = useState(4);
-  const [roomNames, setRoomNames]     = useState(Array(4).fill(''));
+  const [step, setStep]             = useState(1);
+  const [mode, setMode]             = useState('stroke');
+  const [title, setTitle]           = useState('');
+  const [roomCount, setRoomCount]   = useState(4);
+  const [roomNames, setRoomNames]   = useState(Array(4).fill(''));
   const [uploadMethod, setUploadMethod] = useState('');
   const [participants, setParticipants] = useState([]);
 
-  // 수동할당 애니메이션 인덱스
-  const [loadingId, setLoadingId]     = useState(null);
+  // 수동배정 로딩 인덱스
+  const [loadingId, setLoadingId]   = useState(null);
 
   // 방 개수 변경 시 룸네임 초기화
   useEffect(() => {
     setRoomNames(Array(roomCount).fill(''));
-    setParticipants([]);
+    setParticipants([]); // 3단계 init에서 재설정
   }, [roomCount]);
 
-  // 3단계: 수동 모드 진입
+  // 3단계 수동 진입: 빈 슬롯 세팅
   const initManual = () => {
     setParticipants(
       Array.from({ length: roomCount * 4 }, (_, i) => ({
@@ -47,7 +48,7 @@ export default function App() {
     );
   };
 
-  // 3단계: 엑셀 업로드
+  // 3단계 엑셀 업로드
   const handleFile = e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -56,15 +57,15 @@ export default function App() {
       const wb   = XLSX.read(evt.target.result, { type: 'binary' });
       const ws   = wb.Sheets[wb.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      const parsed = data.slice(1).map((row, idx) => ({
+      const rows = data.slice(1).map((r, idx) => ({
         id:       idx,
-        group:    Number(row[0]) || 1,
-        nickname: row[1] || '',
-        handicap: Number(row[2]) || 0,
+        group:    Number(r[0])    || 1,
+        nickname:            r[1] || '',
+        handicap: Number(r[2])    || 0,
         score:    null,
         room:     null,
       }));
-      setParticipants(parsed);
+      setParticipants(rows);
     };
     reader.readAsBinaryString(file);
   };
@@ -80,68 +81,69 @@ export default function App() {
     );
   };
 
-  // 5단계: 수동 배정
+  // 5단계: 수동 배정 (1회, 1~2초 딜레이, 단일 alert)
   const handleManualAssign = id => {
     const p = participants.find(x => x.id === id);
     if (!p || !p.group || p.room != null) return;
+
     setLoadingId(id);
     setTimeout(() => {
-      setParticipants(prev => {
-        const occupied = prev
-          .filter(x => x.group === p.group && x.room != null)
-          .map(x => x.room);
-        const candidates = Array.from({ length: roomCount }, (_, i) => i + 1)
-          .filter(r => !occupied.includes(r));
-        if (!candidates.length) return prev;
-        const choice = shuffle(candidates)[0];
-        alert(`${p.nickname} → ${roomNames[choice - 1]} 방배정 완료`);
-        return prev.map(x =>
-          x.id === id
-            ? { ...x, room: choice }
-            : x
-        );
-      });
+      const occupied = participants
+        .filter(x => x.group === p.group && x.room != null)
+        .map(x => x.room);
+      const candidates = Array.from({ length: roomCount }, (_, i) => i + 1)
+        .filter(r => !occupied.includes(r));
+      if (!candidates.length) {
+        setLoadingId(null);
+        return;
+      }
+      const choice = candidates[Math.floor(Math.random() * candidates.length)];
+      setParticipants(prev =>
+        prev.map(x => (x.id === id ? { ...x, room: choice } : x))
+      );
       setLoadingId(null);
+      alert(`${choice}방 배정 완료`);
     }, 1200);
   };
 
-  // 5단계: 자동 배정
+  // 5단계: 자동 배정 (기존 수동 보존 후 빈 슬롯만 채움)
   const handleAutoAssign = () => {
     setParticipants(prev => {
       const next = [...prev];
       const byGroup = {};
+      // 그룹별 아직 배정되지 않은 사람 ID 수집
       next.forEach(p => {
-        if (p.room == null) (byGroup[p.group] ||= []).push(p.id);
+        if (p.room == null && p.group >= 1 && p.group <= 4) {
+          (byGroup[p.group] ||= []).push(p.id);
+        }
       });
+      // 각 그룹별 무작위로 뽑아 방 번호 반복할당
       Object.values(byGroup).forEach(arr => {
         shuffle(arr).forEach((pid, idx) => {
-          next[pid] = { ...next[pid], room: (idx % roomCount) + 1 };
+          const roomNum = (idx % roomCount) + 1;
+          next[pid] = { ...next[pid], room: roomNum };
         });
       });
       return next;
     });
   };
 
-  // 5단계: 강제 배정
-  const handleForceAssign = (id, toRoom) => {
+  // 5단계: 강제 배정 (토글 메뉴에서 번호 선택, 단일 alert)
+  const handleForceAssign = (id, roomNum) => {
     const p = participants.find(x => x.id === id);
     if (!p || !p.group) return;
-    setParticipants(prev => {
-      const next = [...prev];
-      const occupant = next.find(x => x.group === p.group && x.room === toRoom);
-      const from = p.room;
-      next[id] = { ...next[id], room: toRoom };
-      if (occupant) {
-        next[occupant.id] = { ...occupant, room: from };
-      }
-      alert(`${p.nickname} → ${roomNames[toRoom - 1]} 강제배정 완료`);
-      return next;
-    });
+
+    setParticipants(prev =>
+      prev.map(x => (x.id === id ? { ...x, room: roomNum } : x))
+    );
+    alert(`${roomNum}방으로 강제배정 완료`);
   };
 
-  // 5단계: 초기화
+  // 5단계: 초기화 (room 필드만 null로)
   const handleReset = () => {
-    setParticipants(prev => prev.map(p => ({ ...p, room: null })));
+    setParticipants(prev =>
+      prev.map(p => (p.room != null ? { ...p, room: null } : p))
+    );
   };
 
   const rooms = Array.from({ length: roomCount }, (_, i) => i + 1);
@@ -169,6 +171,7 @@ export default function App() {
           step={3}
           uploadMethod={uploadMethod} setUploadMethod={setUploadMethod}
           initManual={initManual}
+          handleFile={handleFile}
           setStep={setStep}
         />
       )}
@@ -185,7 +188,6 @@ export default function App() {
       )}
       {step === 5 && (
         <Step5StrokeAssign
-          step={5}
           participants={participants}
           rooms={rooms}
           loadingId={loadingId}
