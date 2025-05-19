@@ -1,18 +1,22 @@
-
 // src/components/Step5StrokeAssign.js
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './Step5StrokeAssign.module.css';
 
 export default function Step5StrokeAssign({
-  participants,      // [{id, group, nickname, handicap, score}, …]
+  participants,      // [{id, group, nickname, handicap, score, room}, …]
+  rooms,             // [1, 2, …, N]
+  loadingId,         // id of participant currently assigning
   onScoreChange,     // (id, value) => void
   onManualAssign,    // (id) => void
-  onForceAssign,     // (id) => void
+  onForceAssign,     // (id, roomNumber) => void
   onPrev,            // () => void
   onAutoAssign,      // () => void
   onReset,           // () => void
   onNext             // () => void
 }) {
+  // 강제배정 메뉴 토글 상태
+  const [forceSelectingId, setForceSelectingId] = useState(null);
+
   return (
     <div className={styles.step}>
       {/* 1차 헤더 */}
@@ -50,21 +54,43 @@ export default function Step5StrokeAssign({
                 onChange={e => onScoreChange(p.id, e.target.value)}
               />
             </div>
+
+            {/* 수동배정 버튼: 한 번만 팝업 */}
             <div className={`${styles.cell} ${styles.manual}`}>
               <button
                 className={styles.smallBtn}
+                disabled={loadingId === p.id || p.room != null}
                 onClick={() => onManualAssign(p.id)}
               >
-                수동
+                {loadingId === p.id ? '⏳ 배정 중…' : '수동'}
               </button>
             </div>
-            <div className={`${styles.cell} ${styles.force}`}>
-              <button
-                className={styles.smallBtn}
-                onClick={() => onForceAssign(p.id)}
-              >
-                강제
-              </button>
+
+            {/* 강제배정 회전 메뉴 */}
+            <div className={`${styles.cell} ${styles.force}`} style={{ position: 'relative' }}>
+              {forceSelectingId === p.id ? (
+                <div className={styles.forceMenu}>
+                  {rooms.map(r => (
+                    <button
+                      key={r}
+                      className={styles.forceOption}
+                      onClick={() => {
+                        onForceAssign(p.id, r);
+                        setForceSelectingId(null);
+                      }}
+                    >
+                      {r}번 방
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <button
+                  className={styles.smallBtn}
+                  onClick={() => setForceSelectingId(p.id)}
+                >
+                  강제
+                </button>
+              )}
             </div>
           </div>
         ))}

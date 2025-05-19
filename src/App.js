@@ -12,25 +12,28 @@ import './App.css';
 
 // 배열 무작위 섞기
 function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+  return [...arr].sort(() => Math.random() - 0.5);
 }
 
 export default function App() {
-  const [step, setStep]             = useState(1);
-  const [mode, setMode]             = useState('stroke');
-  const [title, setTitle]           = useState('');
-  const [roomCount, setRoomCount]   = useState(4);
-  const [roomNames, setRoomNames]   = useState(Array(4).fill(''));
+  const [step, setStep]               = useState(1);
+  const [mode, setMode]               = useState('stroke');
+  const [title, setTitle]             = useState('');
+  const [roomCount, setRoomCount]     = useState(4);
+  const [roomNames, setRoomNames]     = useState(Array(4).fill(''));
   const [uploadMethod, setUploadMethod] = useState('');
   const [participants, setParticipants] = useState([]);
 
-  // 방 개수 변경 시, 룸네임 초기화 & 참가자 배정 리셋
+  // 수동할당 애니메이션 인덱스
+  const [loadingId, setLoadingId]     = useState(null);
+
+  // 방 개수 변경 시 룸네임 초기화
   useEffect(() => {
     setRoomNames(Array(roomCount).fill(''));
-    setParticipants([]); // 참가자 자체는 지우고 3단계에서 다시 세팅
+    setParticipants([]);
   }, [roomCount]);
 
-  // 3단계 수동 진입
+  // 3단계: 수동 모드 진입
   const initManual = () => {
     setParticipants(
       Array.from({ length: roomCount * 4 }, (_, i) => ({
@@ -44,7 +47,7 @@ export default function App() {
     );
   };
 
-  // 3단계 엑셀 업로드
+  // 3단계: 엑셀 업로드
   const handleFile = e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -53,13 +56,13 @@ export default function App() {
       const wb   = XLSX.read(evt.target.result, { type: 'binary' });
       const ws   = wb.Sheets[wb.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      const parsed = data.slice(1).map((r, i) => ({
-        id:       i,
-        group:    Number(r[0]) || 1,
-        nickname: r[1] || '',
-        handicap: Number(r[2]) || 0,
+      const parsed = data.slice(1).map((row, idx) => ({
+        id:       idx,
+        group:    Number(row[0]) || 1,
+        nickname: row[1] || '',
+        handicap: Number(row[2]) || 0,
         score:    null,
-        room:     null
+        room:     null,
       }));
       setParticipants(parsed);
     };
@@ -77,77 +80,68 @@ export default function App() {
     );
   };
 
-  // 5단계: 수동 배정 → participants.room에 직접 기록
+  // 5단계: 수동 배정
   const handleManualAssign = id => {
-    setParticipants(prev => {
-      const p = prev.find(x => x.id === id);
-      if (!p || !p.group) return prev;
-
-      // 같은 조 이미 배정된 방들
-      const occupied = prev
-        .filter(x => x.group === p.group && x.room != null)
-        .map(x => x.room);
-      // 빈 방 후보
-      const candidates = Array.from({ length: roomCount }, (_, i) => i + 1)
-        .filter(r => !occupied.includes(r));
-      if (!candidates.length) return prev;
-
-      const choice = candidates[Math.floor(Math.random() * candidates.length)];
-      alert(`${p.nickname} → ${roomNames[choice - 1]} 방배정 완료`);
-
-      return prev.map(x =>
-        x.id === id
-          ? { ...x, room: choice }
-          : x
-      );
-    });
+    const p = participants.find(x => x.id === id);
+    if (!p || !p.group || p.room != null) return;
+    setLoadingId(id);
+    setTimeout(() => {
+      setParticipants(prev => {
+        const occupied = prev
+          .filter(x => x.group === p.group && x.room != null)
+          .map(x => x.room);
+        const candidates = Array.from({ length: roomCount }, (_, i) => i + 1)
+          .filter(r => !occupied.includes(r));
+        if (!candidates.length) return prev;
+        const choice = shuffle(candidates)[0];
+        alert(`${p.nickname} → ${roomNames[choice - 1]} 방배정 완료`);
+        return prev.map(x =>
+          x.id === id
+            ? { ...x, room: choice }
+            : x
+        );
+      });
+      setLoadingId(null);
+    }, 1200);
   };
 
-  // 5단계: 자동 배정 → participants.room에 남은 슬롯만 채우기
+  // 5단계: 자동 배정
   const handleAutoAssign = () => {
     setParticipants(prev => {
-      // 그룹별 남은 ID
-      const byGroup = {};
-      prev.forEach(p => {
-        if (p.room == null && p.group >= 1 && p.group <= 4) {
-          (byGroup[p.group] ||= []).push(p.id);
-        }
-      });
-
-      // 새 복사본
       const next = [...prev];
-      Object.values(byGroup).forEach(idArr => {
-        shuffle(idArr).forEach((pid, idx) => {
-          const roomNum = (idx % roomCount) + 1;
-          next[pid] = { ...next[pid], room: roomNum };
+      const byGroup = {};
+      next.forEach(p => {
+        if (p.room == null) (byGroup[p.group] ||= []).push(p.id);
+      });
+      Object.values(byGroup).forEach(arr => {
+        shuffle(arr).forEach((pid, idx) => {
+          next[pid] = { ...next[pid], room: (idx % roomCount) + 1 };
         });
       });
       return next;
     });
   };
 
-  // 5단계: 강제 배정 → swap 또는 move
+  // 5단계: 강제 배정
   const handleForceAssign = (id, toRoom) => {
+    const p = participants.find(x => x.id === id);
+    if (!p || !p.group) return;
     setParticipants(prev => {
       const next = [...prev];
-      const p = next.find(x => x.id === id);
-      if (!p || !p.group) return prev;
-
-      const gidx = p.group;
-      // occupant 찾기
-      const occupant = next.find(x => x.group === gidx && x.room === toRoom);
-
-      // 본인 이전 방
-      const fromRoom = p.room;
-
-      // swap or move
-      next[id] = { ...p, room: toRoom };
+      const occupant = next.find(x => x.group === p.group && x.room === toRoom);
+      const from = p.room;
+      next[id] = { ...next[id], room: toRoom };
       if (occupant) {
-        next[occupant.id] = { ...occupant, room: fromRoom };
+        next[occupant.id] = { ...occupant, room: from };
       }
       alert(`${p.nickname} → ${roomNames[toRoom - 1]} 강제배정 완료`);
       return next;
     });
+  };
+
+  // 5단계: 초기화
+  const handleReset = () => {
+    setParticipants(prev => prev.map(p => ({ ...p, room: null })));
   };
 
   const rooms = Array.from({ length: roomCount }, (_, i) => i + 1);
@@ -194,11 +188,12 @@ export default function App() {
           step={5}
           participants={participants}
           rooms={rooms}
+          loadingId={loadingId}
           onScoreChange={handleScoreChange}
           onManualAssign={handleManualAssign}
           onForceAssign={handleForceAssign}
           onAutoAssign={handleAutoAssign}
-          onReset={initManual}
+          onReset={handleReset}
           onPrev={() => setStep(4)}
           onNext={() => setStep(6)}
         />
