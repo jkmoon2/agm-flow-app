@@ -11,7 +11,7 @@ import Step6StrokeResults  from './components/Step6StrokeResults';
 
 import './App.css';
 
-// 배열 무작위 섞기
+// 배열을 무작위로 섞는 함수
 function shuffle(arr) {
   return [...arr].sort(() => Math.random() - 0.5);
 }
@@ -25,16 +25,16 @@ export default function App() {
   const [uploadMethod, setUploadMethod] = useState('');
   const [participants, setParticipants] = useState([]);
 
-  // 수동배정 로딩 인덱스
+  // 수동배정 로딩 표시용
   const [loadingId, setLoadingId]   = useState(null);
 
-  // 방 개수 변경 시 룸네임 초기화
+  // 방 개수 변경 시 룸네임 초기화, 참가자 초기화(3단계에서)
   useEffect(() => {
     setRoomNames(Array(roomCount).fill(''));
-    setParticipants([]); // 3단계 init에서 재설정
+    setParticipants([]);
   }, [roomCount]);
 
-  // 3단계 수동 진입: 빈 슬롯 세팅
+  // 3단계: 수동 진입 → 빈 슬롯 세팅
   const initManual = () => {
     setParticipants(
       Array.from({ length: roomCount * 4 }, (_, i) => ({
@@ -48,7 +48,7 @@ export default function App() {
     );
   };
 
-  // 3단계 엑셀 업로드
+  // 3단계: 엑셀 업로드
   const handleFile = e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -59,9 +59,9 @@ export default function App() {
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
       const rows = data.slice(1).map((r, idx) => ({
         id:       idx,
-        group:    Number(r[0])    || 1,
-        nickname:            r[1] || '',
-        handicap: Number(r[2])    || 0,
+        group:    Number(r[0]) || 1,
+        nickname: r[1] || '',
+        handicap: Number(r[2]) || 0,
         score:    null,
         room:     null,
       }));
@@ -81,7 +81,7 @@ export default function App() {
     );
   };
 
-  // 5단계: 수동 배정 (1회, 1~2초 딜레이, 단일 alert)
+  // 5단계: 수동배정 (1회, 1~2초 딜레이, 단일 alert)
   const handleManualAssign = id => {
     const p = participants.find(x => x.id === id);
     if (!p || !p.group || p.room != null) return;
@@ -97,49 +97,62 @@ export default function App() {
         setLoadingId(null);
         return;
       }
-      const choice = candidates[Math.floor(Math.random() * candidates.length)];
+      const choice = shuffle(candidates)[0];
       setParticipants(prev =>
-        prev.map(x => (x.id === id ? { ...x, room: choice } : x))
+        prev.map(x =>
+          x.id === id ? { ...x, room: choice } : x
+        )
       );
       setLoadingId(null);
       alert(`${choice}방 배정 완료`);
     }, 1200);
   };
 
-  // 5단계: 자동 배정 (기존 수동 보존 후 빈 슬롯만 채움)
+  // 5단계: 자동배정 (existing manual preserved, only fill free slots)
   const handleAutoAssign = () => {
     setParticipants(prev => {
       const next = [...prev];
-      const byGroup = {};
-      // 그룹별 아직 배정되지 않은 사람 ID 수집
-      next.forEach(p => {
-        if (p.room == null && p.group >= 1 && p.group <= 4) {
-          (byGroup[p.group] ||= []).push(p.id);
-        }
-      });
-      // 각 그룹별 무작위로 뽑아 방 번호 반복할당
-      Object.values(byGroup).forEach(arr => {
-        shuffle(arr).forEach((pid, idx) => {
-          const roomNum = (idx % roomCount) + 1;
-          next[pid] = { ...next[pid], room: roomNum };
+      const roomsArr = Array.from({ length: roomCount }, (_, i) => i + 1);
+      [1,2,3,4].forEach(g => {
+        const occupied = next
+          .filter(p => p.group === g && p.room != null)
+          .map(p => p.room);
+        const freeRooms = roomsArr.filter(r => !occupied.includes(r));
+        const unassignedIds = next
+          .filter(p => p.group === g && p.room == null)
+          .map(p => p.id);
+        shuffle(unassignedIds).forEach((pid, idx) => {
+          if (idx < freeRooms.length) {
+            next[pid] = { ...next[pid], room: freeRooms[idx] };
+          }
         });
       });
       return next;
     });
   };
 
-  // 5단계: 강제 배정 (토글 메뉴에서 번호 선택, 단일 alert)
-  const handleForceAssign = (id, roomNum) => {
+  // 5단계: 강제배정 (swap or move, single alert)
+  const handleForceAssign = (id, toRoom) => {
     const p = participants.find(x => x.id === id);
     if (!p || !p.group) return;
+    const fromRoom = p.room;
+    const occ = participants.find(x => x.group === p.group && x.room === toRoom);
 
     setParticipants(prev =>
-      prev.map(x => (x.id === id ? { ...x, room: roomNum } : x))
+      prev.map(x => {
+        if (x.id === id) {
+          return { ...x, room: toRoom };
+        }
+        if (occ && x.id === occ.id) {
+          return { ...x, room: fromRoom };
+        }
+        return x;
+      })
     );
-    alert(`${roomNum}방으로 강제배정 완료`);
+    alert(`${toRoom}방으로 강제배정 완료`);
   };
 
-  // 5단계: 초기화 (room 필드만 null로)
+  // 5단계: 초기화 (room only)
   const handleReset = () => {
     setParticipants(prev =>
       prev.map(p => (p.room != null ? { ...p, room: null } : p))
