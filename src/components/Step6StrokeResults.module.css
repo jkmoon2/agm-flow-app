@@ -18,7 +18,7 @@
   border-bottom: 1px solid #ccc;
 }
 
-/* 테이블 컨테이너: 위쪽 여백, 가로 스크롤 */
+/* 테이블 컨테이너 */
 .tableContainer {
   margin: 8px 6px;
   flex: 1;
@@ -42,7 +42,7 @@
   margin: 0;
 }
 
-/* 공통 표 스타일 */
+/* 공통 테이블 스타일 */
 .table {
   border-collapse: collapse;
   width: auto;
@@ -70,7 +70,7 @@
   text-overflow: ellipsis;
 }
 
-/* 요약(합계/순위) 셀 */
+/* 요약(합계/순위) 셀 기본 */
 .footerLabel,
 .footerValue,
 .footerBanddang,
@@ -85,42 +85,6 @@
 .footerBanddang { color: blue; }
 .footerResult   { color: red; }
 .footerRank     { color: blue; }
-
-/* ───────── 색상 오버라이드 ───────── */
-
-/* 1) 방배정표 (두 번째 .tableContainer) */
-.step > .tableContainer:nth-child(2) .table tbody tr > td,
-.step > .tableContainer:nth-child(2) .table tfoot tr > td {
-  color: #000 !important;
-}
-.step > .tableContainer:nth-child(2) .table tbody tr > td:nth-child(2n),
-.step > .tableContainer:nth-child(2) .table tfoot tr > td:nth-child(2n) {
-  color: blue !important;
-}
-
-/* 2) 최종결과표 (세 번째 .tableContainer) */
-.step > .tableContainer:nth-child(3) .table tbody tr > td,
-.step > .tableContainer:nth-child(3) .table tfoot tr > td {
-  color: #000 !important;
-}
-.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n+4),
-.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n+4) {
-  color: blue !important;
-}
-.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n),
-.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n) {
-  color: red !important;
-}
-.step > .tableContainer:nth-child(3) .table tfoot tr > td.footerRank {
-  color: blue !important;
-  background: transparent !important;
-}
-
-/* ─────── 합계 행 배경색: 첫 번째 tfoot 행만 적용 ─────── */
-/* 방배정표 & 최종결과표 합계 라인(tfoot 첫 번째 tr)에만 헤더 배경색 적용 */
-.tableContainer .table tfoot tr:first-child td {
-  background: #f0f0f0 !important;
-}
 
 /* 하단 버튼 */
 .stepFooter {
@@ -145,4 +109,46 @@
 }
 .stepFooter button:active {
   background: #d0d0d0;
+}
+
+/* ────────────── 색상 오버라이드 ────────────── */
+
+/* 방배정표 (두 번째 tableContainer) */
+.step > .tableContainer:nth-child(2) .table tbody tr > td,
+.step > .tableContainer:nth-child(2) .table tfoot tr > td {
+  color: #000 !important;
+}
+.step > .tableContainer:nth-child(2) .table tbody tr > td:nth-child(2n),
+.step > .tableContainer:nth-child(2) .table tfoot tr > td:nth-child(2n) {
+  color: blue !important;
+}
+
+/* 빈칸 최소 너비 추가 */
+.step > .tableContainer:nth-child(2) .cell {
+  min-width: 80px;
+}
+
+/* 최종결과표 (세 번째 tableContainer) */
+.step > .tableContainer:nth-child(3) .table tbody tr > td,
+.step > .tableContainer:nth-child(3) .table tfoot tr > td {
+  color: #000 !important;
+}
+.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n+4),
+.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n+4) {
+  color: blue !important;
+}
+.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n),
+.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n) {
+  color: red !important;
+}
+.step > .tableContainer:nth-child(3) .table tfoot tr > td.footerRank {
+  color: blue !important;
+  background: transparent !important;
+}
+
+/* ───────── 합계 라인 배경색 ───────── */
+
+/* 첫 번째 tfoot 행(합계)에만 헤더 배경색 적용 */
+.tableContainer .table tfoot tr:first-child td {
+  background: #f0f0f0 !important;
 }

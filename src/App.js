@@ -1,280 +1,217 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
-// ==============================================
-// [1] 안전한 숫자 변환 함수
-function toNumberSafe(val) {
-  const num = Number(val);
-  return isNaN(num) ? 0 : num;
+import Step1ModeTitle      from './components/Step1ModeTitle';
+import Step2RoomSetup      from './components/Step2RoomSetup';
+import Step3UploadType     from './components/Step3UploadType';
+import Step4Participant    from './components/Step4Participant';
+import Step5StrokeAssign   from './components/Step5StrokeAssign';
+import Step6StrokeResults  from './components/Step6StrokeResults';
+
+import './App.css';
+
+// 배열 무작위 섞기
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
 }
 
-// ==============================================
-// [2] 인라인 스타일 정의
-const tableContainerStyle = { overflowX: 'auto', marginTop: '20px', marginBottom: '20px' };
-const tableStyle = { borderCollapse: 'collapse', width: '100%', tableLayout: 'fixed' };
-const baseCellStyle = { border: '1px solid #ccc', padding: '8px', textAlign: 'center', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' };
-const headerStyle = { ...baseCellStyle, backgroundColor: '#f0f0f0', fontWeight: 'bold', fontSize: '18px' };
-const footerStyle = { ...baseCellStyle, backgroundColor: '#e8e8e8', fontWeight: 'bold' };
-
-// ==============================================
-// [3] 글자 길이에 따라 폰트 크기 자동 조절 함수
-function fitFontSize(text = "", maxLen = 6, baseSize = 18, minSize = 14) {
-  if (text.length <= maxLen) return { fontSize: `${baseSize}px` };
-  const ratio = maxLen / text.length;
-  return { fontSize: `${Math.max(minSize, Math.floor(baseSize * ratio))}px` };
-}
-
-// ==============================================
-// [4] G핸디 표시 함수
-function displayGhandi(val) {
-  return toNumberSafe(val) === 0 ? '0' : val;
-}
-
-// ==============================================
-// [6] RoomAllocationTable (unchanged)
-function RoomAllocationTable({ rooms, roomLabels, hiddenRooms }) {
-  const rowCount = 4;
-  const roomNumbers = Object.keys(roomLabels).filter(r => !hiddenRooms[r]);
-  const roomHandySum = {};
-  roomNumbers.forEach(room => {
-    const arr = rooms[room] || [];
-    let sum = 0;
-    for (let i = 0; i < rowCount; i++) {
-      const p = arr[i];
-      if (p && p.ghandi !== '') sum += Number(p.ghandi);
-    }
-    roomHandySum[room] = sum;
-  });
-
-  return (
-    <div style={tableContainerStyle}>
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            {roomNumbers.map(room => (
-              <th key={room} colSpan={2} style={{ ...headerStyle }}>
-                {roomLabels[Number(room)]}
-              </th>
-            ))}
-          </tr>
-          <tr>
-            {roomNumbers.map(room => (
-              <React.Fragment key={room}>
-                <th style={headerStyle}>닉네임</th>
-                <th style={headerStyle}>G핸디</th>
-              </React.Fragment>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {Array.from({ length: rowCount }).map((_, rowIndex) => (
-            <tr key={rowIndex}>
-              {roomNumbers.map(room => {
-                const p = rooms[room]?.[rowIndex];
-                return (
-                  <React.Fragment key={`${room}-${rowIndex}`}>
-                    <td style={{ ...baseCellStyle, ...fitFontSize(p?.name || '', 6, 18, 14) }}>
-                      {p?.name || ''}
-                    </td>
-                    <td style={{ ...baseCellStyle, color: 'blue' }}>
-                      {p ? displayGhandi(p.ghandi) : ''}
-                    </td>
-                  </React.Fragment>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
-        <tfoot>
-          <tr>
-            {roomNumbers.map(room => (
-              <React.Fragment key={room}>
-                <td style={{ ...footerStyle, color: 'black' }}>합계</td>
-                <td style={{ ...footerStyle, color: 'blue' }}>{roomHandySum[room]}</td>
-              </React.Fragment>
-            ))}
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  );
-}
-
-// ==============================================
-// [7] FinalResultTable (unchanged)
-function FinalResultTable({ rooms, scores, roomLabels, hiddenRooms, showScore, showBanddang, toggleRoomVisibility, setShowScore, setShowBanddang }) {
-  // unchanged
-  return <div>...FinalResultTable content...</div>;
-}
-
-// ==============================================
-// [8] App 컴포넌트 (수정 반영)
-function App() {
-  const [topTitle, setTopTitle] = useState('스트로크 모드 배정');
-  const [roomCount, setRoomCount] = useState(4);
+export default function App() {
+  const [step, setStep]             = useState(1);
+  const [mode, setMode]             = useState('stroke');
+  const [title, setTitle]           = useState('');
+  const [roomCount, setRoomCount]   = useState(4);
+  const [roomNames, setRoomNames]   = useState(Array(4).fill(''));
+  const [uploadMethod, setUploadMethod] = useState('');
   const [participants, setParticipants] = useState([]);
-  const [assigned, setAssigned] = useState({});
-  const [buttonClicked, setButtonClicked] = useState({});
-  const [uploadKey, setUploadKey] = useState(0);
-  const [forceResetKey, setForceResetKey] = useState(0);
-  const [loadingIdx, setLoadingIdx] = useState(null);
-  const [scores, setScores] = useState({});
-  const [tableView, setTableView] = useState('none');
-  const [roomLabels, setRoomLabels] = useState([]);
-  const [hiddenRooms, setHiddenRooms] = useState({});
 
-  // 방 개수 변경 시 라벨 초기화 & assigned 초기화
+  // 방 개수 변경 시, 룸네임 초기화 & 참가자 배정 리셋
   useEffect(() => {
-    setRoomLabels(Array.from({ length: roomCount }, (_, i) => `${i + 1}번 방`));
-    initParticipants();
+    setRoomNames(Array(roomCount).fill(''));
+    setParticipants([]); // 참가자 자체는 지우고 3단계에서 다시 세팅
   }, [roomCount]);
 
-  // 5) 초기화: 참가자는 유지, assigned 등 상태만 초기화
-  const initParticipants = () => {
-    setAssigned({});
-    setButtonClicked({});
-    setScores({});
-    setTableView('none');
-    setUploadKey(prev => prev + 1);
-    setForceResetKey(prev => prev + 1);
-    setHiddenRooms({});
+  // 3단계 수동 진입
+  const initManual = () => {
+    setParticipants(
+      Array.from({ length: roomCount * 4 }, (_, i) => ({
+        id:       i,
+        group:    1,
+        nickname: '',
+        handicap: 0,
+        score:    null,
+        room:     null,
+      }))
+    );
   };
 
-  // 룸 라벨 변경
-  const handleRoomLabelChange = (idx, val) => {
-    const arr = [...roomLabels];
-    arr[idx] = val;
-    setRoomLabels(arr);
-  };
-
-  const toggleRoomVisibility = r => {
-    setHiddenRooms(prev => ({ ...prev, [r]: !prev[r] }));
-  };
-
-  // 엑셀 업로드
-  const handleExcel = e => {
-    const f = e.target.files[0];
-    if (!f) return;
-    const r = new FileReader();
-    r.onload = evt => {
-      const wb = XLSX.read(evt.target.result, { type: 'binary' });
-      const ws = wb.Sheets[wb.SheetNames[0]];
+  // 3단계 엑셀 업로드
+  const handleFile = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = evt => {
+      const wb   = XLSX.read(evt.target.result, { type: 'binary' });
+      const ws   = wb.Sheets[wb.SheetNames[0]];
       const data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      const rows = data.slice(1).map(r => ({ group: r[0] || '', name: r[1] || '', ghandi: r[2] === 0 ? 0 : (r[2] || '') }));
-      setParticipants(rows);
-      setAssigned({});
-      setButtonClicked({});
-      setScores({});
-      setTableView('none');
-      setForceResetKey(prev => prev + 1);
-      setHiddenRooms({});
+      const parsed = data.slice(1).map((r, i) => ({
+        id:       i,
+        group:    Number(r[0]) || 1,
+        nickname: r[1] || '',
+        handicap: Number(r[2]) || 0,
+        score:    null,
+        room:     null
+      }));
+      setParticipants(parsed);
     };
-    r.readAsBinaryString(f);
+    reader.readAsBinaryString(file);
   };
 
-  const handleInput = (i, key, v) => {
-    const c = [...participants];
-    c[i][key] = key === 'group' || key === 'ghandi' ? Number(v) || '' : v;
-    setParticipants(c);
-  };
-  const handleScoreChange = (name, val) => {
-    const key = name.trim().toLowerCase();
-    setScores(prev => ({ ...prev, [key]: val }));
-  };
-
-  const shuffleArr = arr => arr.sort(() => Math.random() - 0.5);
-
-  // 3) 수동 배정
-  const assignIndividual = i => {
-    const u = participants[i];
-    if (!u.group || !u.name || u.ghandi === '' || buttonClicked[i]) return;
-    setButtonClicked(prev => ({ ...prev, [i]: true }));
-    const gidx = u.group - 1;
-    const avail = [];
-    for (let r = 0; r < roomCount; r++) {
-      const roomArr = assigned[r] || [];
-      if (!roomArr[gidx]) avail.push(r);
-    }
-    if (!avail.length) return;
-    const choice = shuffleArr(avail)[0];
-    setLoadingIdx(i);
-    setTimeout(() => {
-      setAssigned(prev => {
-        const nx = { ...prev };
-        if (!nx[choice]) nx[choice] = [];
-        nx[choice][gidx] = u;
-        return nx;
-      });
-      setLoadingIdx(null);
-      alert(`${u.name} → ${roomLabels[choice]} 방배정 완료`);
-    }, 1200);
+  // 5단계: 점수 입력
+  const handleScoreChange = (id, value) => {
+    setParticipants(prev =>
+      prev.map(p =>
+        p.id === id
+          ? { ...p, score: value === '' ? null : Number(value) }
+          : p
+      )
+    );
   };
 
-  // 2) 자동 배정 (기존 assigned 보존)
-  const autoAssign = () => {
-    const used = new Set(Object.values(assigned).flat().map(p => p?.name));
-    const groups = [[], [], [], []];
-    participants.forEach((p, i) => {
-      if (p.group >= 1 && p.group <= 4 && !used.has(p.name)) groups[p.group - 1].push({ ...p, idx: i });
+  // 5단계: 수동 배정 → participants.room에 직접 기록
+  const handleManualAssign = id => {
+    setParticipants(prev => {
+      const p = prev.find(x => x.id === id);
+      if (!p || !p.group) return prev;
+
+      // 같은 조 이미 배정된 방들
+      const occupied = prev
+        .filter(x => x.group === p.group && x.room != null)
+        .map(x => x.room);
+      // 빈 방 후보
+      const candidates = Array.from({ length: roomCount }, (_, i) => i + 1)
+        .filter(r => !occupied.includes(r));
+      if (!candidates.length) return prev;
+
+      const choice = candidates[Math.floor(Math.random() * candidates.length)];
+      alert(`${p.nickname} → ${roomNames[choice - 1]} 방배정 완료`);
+
+      return prev.map(x =>
+        x.id === id
+          ? { ...x, room: choice }
+          : x
+      );
     });
-    const res = { ...assigned };
-    groups.forEach((grp, gidx) => {
-      const sh = shuffleArr(grp);
-      let ptr = 0;
-      sh.forEach(u => {
-        while (ptr < roomCount && res[ptr]?.[gidx]) ptr++;
-        if (ptr < roomCount) {
-          if (!res[ptr]) res[ptr] = [];
-          res[ptr][gidx] = u;
+  };
+
+  // 5단계: 자동 배정 → participants.room에 남은 슬롯만 채우기
+  const handleAutoAssign = () => {
+    setParticipants(prev => {
+      // 그룹별 남은 ID
+      const byGroup = {};
+      prev.forEach(p => {
+        if (p.room == null && p.group >= 1 && p.group <= 4) {
+          (byGroup[p.group] ||= []).push(p.id);
         }
       });
+
+      // 새 복사본
+      const next = [...prev];
+      Object.values(byGroup).forEach(idArr => {
+        shuffle(idArr).forEach((pid, idx) => {
+          const roomNum = (idx % roomCount) + 1;
+          next[pid] = { ...next[pid], room: roomNum };
+        });
+      });
+      return next;
     });
-    setAssigned(res);
-    const bc = {};
-    Object.values(res).flat().forEach(p => (bc[p.idx] = true));
-    setButtonClicked(bc);
   };
 
-  // 4) 강제 배정 (swap 로직 포함)
-  const forceAssign = (i, rIdx) => {
-    const u = participants[i];
-    if (!u.group || !u.name) return;
-    const gidx = u.group - 1;
-    setAssigned(prev => {
-      const nx = { ...prev };
-      let oldRoom = null;
-      Object.entries(nx).forEach(([rk, arr]) => {
-        if (arr?.[gidx]?.name === u.name) oldRoom = Number(rk);
-      });
-      const destArr = nx[rIdx] || [];
-      const occupant = destArr[gidx];
-      if (oldRoom !== null) {
-        nx[oldRoom] = [...nx[oldRoom]];
-        delete nx[oldRoom][gidx];
-      }
+  // 5단계: 강제 배정 → swap 또는 move
+  const handleForceAssign = (id, toRoom) => {
+    setParticipants(prev => {
+      const next = [...prev];
+      const p = next.find(x => x.id === id);
+      if (!p || !p.group) return prev;
+
+      const gidx = p.group;
+      // occupant 찾기
+      const occupant = next.find(x => x.group === gidx && x.room === toRoom);
+
+      // 본인 이전 방
+      const fromRoom = p.room;
+
+      // swap or move
+      next[id] = { ...p, room: toRoom };
       if (occupant) {
-        if (oldRoom !== null) {
-          if (!nx[oldRoom]) nx[oldRoom] = [];
-          nx[oldRoom][gidx] = occupant;
-        }
+        next[occupant.id] = { ...occupant, room: fromRoom };
       }
-      if (!nx[rIdx]) nx[rIdx] = [];
-      nx[rIdx][gidx] = u;
-      return nx;
+      alert(`${p.nickname} → ${roomNames[toRoom - 1]} 강제배정 완료`);
+      return next;
     });
-    setButtonClicked(prev => ({ ...prev, [i]: true }));
   };
 
-  const calculateRoomTotal = room => (room || []).reduce((s, p) => s + (Number(scores[p.name.trim().toLowerCase()] || 0) - Number(p.ghandi || 0)), 0);
+  const rooms = Array.from({ length: roomCount }, (_, i) => i + 1);
 
   return (
-    <div style={{ padding: 20 }}>
-      {/* ... UI 렌더링 부분은 기존 그대로 유지 ... */}
+    <div className="app-container">
+      {step === 1 && (
+        <Step1ModeTitle
+          step={1}
+          mode={mode} setMode={setMode}
+          title={title} setTitle={setTitle}
+          setStep={setStep}
+        />
+      )}
+      {step === 2 && (
+        <Step2RoomSetup
+          step={2}
+          roomCount={roomCount} setRoomCount={setRoomCount}
+          roomNames={roomNames} setRoomNames={setRoomNames}
+          setStep={setStep}
+        />
+      )}
+      {step === 3 && (
+        <Step3UploadType
+          step={3}
+          uploadMethod={uploadMethod} setUploadMethod={setUploadMethod}
+          initManual={initManual}
+          setStep={setStep}
+        />
+      )}
+      {step === 4 && (
+        <Step4Participant
+          step={4}
+          mode={mode}
+          uploadMethod={uploadMethod}
+          participants={participants} setParticipants={setParticipants}
+          roomCount={roomCount}
+          handleFile={handleFile}
+          setStep={setStep}
+        />
+      )}
+      {step === 5 && (
+        <Step5StrokeAssign
+          step={5}
+          participants={participants}
+          rooms={rooms}
+          onScoreChange={handleScoreChange}
+          onManualAssign={handleManualAssign}
+          onForceAssign={handleForceAssign}
+          onAutoAssign={handleAutoAssign}
+          onReset={initManual}
+          onPrev={() => setStep(4)}
+          onNext={() => setStep(6)}
+        />
+      )}
+      {step === 6 && (
+        <Step6StrokeResults
+          participants={participants}
+          roomNames={roomNames}
+          roomCount={roomCount}
+          onPrev={() => setStep(5)}
+          onNext={() => setStep(mode === 'stroke' ? 7 : 8)}
+        />
+      )}
     </div>
   );
 }
-
-export default App;
