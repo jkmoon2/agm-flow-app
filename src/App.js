@@ -117,10 +117,7 @@ export default function App() {
 
   // 5단계: 자동 배정 (스트로크 방식)
   const handleAutoAssign = () => {
-    // 1) 이미 배정된 사람 제외하고
-    const already = participants.filter(p => p.room !== null).map(p => p.id);
-
-    // 2) 그룹별로 남은 사람 ID 리스트
+    // 그룹별로 남은 사람 ID 리스트
     const byGroup = {};
     participants.forEach(p => {
       if (p.room === null && p.group >= 1 && p.group <= 4) {
@@ -128,17 +125,14 @@ export default function App() {
       }
     });
 
-    // 3) 방마다 한 명씩 뽑아서 무작위 배정
-    //    → 1조 멤버를 1번 방부터 순서대로, 2조도 마찬가지
+    // 방마다 한 명씩 뽑아서 무작위 배정
     const shuffle = arr => arr.sort(() => Math.random() - 0.5);
 
-    // 4) 새 participants 복사
     let updated = [...participants];
 
     Object.keys(byGroup).forEach(groupKey => {
       const grp = shuffle(byGroup[groupKey]);
       grp.forEach((pid, idx) => {
-        // 방 인덱스 순환: 1조 인원들은 방1,방2,방3... 순서
         const roomNum = (idx % roomCount) + 1;
         updated = updated.map(x =>
           x.id === pid ? { ...x, room: roomNum } : x
