@@ -1,5 +1,4 @@
-// src/components/Step5StrokeAssign.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Step5StrokeAssign.module.css';
 
 export default function Step5StrokeAssign({
@@ -14,17 +13,20 @@ export default function Step5StrokeAssign({
   onReset,           // () => void
   onNext             // () => void
 }) {
-  // 강제배정 메뉴 토글 상태
   const [forceSelectingId, setForceSelectingId] = useState(null);
+
+  // ★ 추가: 디버깅용 console.log
+  useEffect(() => {
+    console.log('[Step5] loadingId:', loadingId);
+    console.log('[Step5] participants rooms:', participants.map(p => ({ id: p.id, room: p.room })));
+  }, [loadingId, participants]);
 
   return (
     <div className={styles.step}>
-      {/* 1차 헤더 */}
       <div className={styles.stepHeader}>
         <h3>5. 스트로크 방배정</h3>
       </div>
 
-      {/* 3차 헤더 */}
       <div className={styles.participantRowHeader}>
         <div className={`${styles.cell} ${styles.group}`}>조</div>
         <div className={`${styles.cell} ${styles.nickname}`}>닉네임</div>
@@ -34,7 +36,6 @@ export default function Step5StrokeAssign({
         <div className={`${styles.cell} ${styles.force}`}>강제</div>
       </div>
 
-      {/* 리스트 영역 */}
       <div className={styles.participantTable}>
         {participants.map(p => (
           <div className={styles.participantRow} key={p.id}>
@@ -55,23 +56,30 @@ export default function Step5StrokeAssign({
               />
             </div>
 
-            {/* 수동배정 버튼: 한 번만 팝업 */}
+            {/* ★ 수정: room !== null 로만 disabled 체크 */}
             <div className={`${styles.cell} ${styles.manual}`}>
               <button
                 className={styles.smallBtn}
-                disabled={loadingId === p.id || p.room != null}
+                disabled={loadingId === p.id || p.room !== null}
                 onClick={() => onManualAssign(p.id)}
               >
-                {loadingId === p.id ? '⏳ 배정 중…' : '수동'}
+                {loadingId === p.id
+                  ? <span className={styles.spinner}/>
+                  : '수동'}
               </button>
             </div>
 
-            {/* 강제배정 회전 메뉴 */}
             <div className={`${styles.cell} ${styles.force}`} style={{ position: 'relative' }}>
-              {forceSelectingId === p.id ? (
+              <button
+                className={styles.smallBtn}
+                onClick={() => setForceSelectingId(p.id)}
+              >
+                강제
+              </button>
+              {forceSelectingId === p.id && (
                 <div className={styles.forceMenu}>
                   {rooms.map(r => (
-                    <button
+                    <div
                       key={r}
                       className={styles.forceOption}
                       onClick={() => {
@@ -80,23 +88,15 @@ export default function Step5StrokeAssign({
                       }}
                     >
                       {r}번 방
-                    </button>
+                    </div>
                   ))}
                 </div>
-              ) : (
-                <button
-                  className={styles.smallBtn}
-                  onClick={() => setForceSelectingId(p.id)}
-                >
-                  강제
-                </button>
               )}
             </div>
           </div>
         ))}
       </div>
 
-      {/* 하단 버튼 */}
       <div className={styles.stepFooter}>
         <button onClick={onPrev}>← 이전</button>
         <button onClick={onAutoAssign} className={styles.textOnly}>

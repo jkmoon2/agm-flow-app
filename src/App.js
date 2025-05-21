@@ -1,4 +1,3 @@
-// src/App.js
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 
@@ -25,7 +24,7 @@ export default function App() {
   const [uploadMethod, setUploadMethod] = useState('');
   const [participants, setParticipants] = useState([]);
 
-  // 수동배정 로딩 표시용
+  // ★ 수동배정 로딩 표시용
   const [loadingId, setLoadingId]   = useState(null);
 
   // 방 개수 변경 시 룸네임 초기화, 참가자 초기화(3단계에서)
@@ -81,12 +80,12 @@ export default function App() {
     );
   };
 
-  // 5단계: 수동배정 (1회, 1~2초 딜레이, 단일 alert)
+  // 5단계: 수동배정 (1회, 1.2초 딜레이, 단일 alert, spinner 효과)
   const handleManualAssign = id => {
     const p = participants.find(x => x.id === id);
     if (!p || !p.group || p.room != null) return;
 
-    setLoadingId(id);
+    setLoadingId(id);  // ★ 로딩 시작
     setTimeout(() => {
       const occupied = participants
         .filter(x => x.group === p.group && x.room != null)
@@ -103,8 +102,8 @@ export default function App() {
           x.id === id ? { ...x, room: choice } : x
         )
       );
-      setLoadingId(null);
-      alert(`${choice}방 배정 완료`);
+      setLoadingId(null);  // ★ 로딩 종료
+      alert(`${p.nickname}님은 ${choice}번 방에 배정되었습니다.`);
     }, 1200);
   };
 
@@ -149,7 +148,7 @@ export default function App() {
         return x;
       })
     );
-    alert(`${toRoom}방으로 강제배정 완료`);
+    alert(`${p.nickname}님은 ${toRoom}번 방으로 강제배정 완료`);
   };
 
   // 5단계: 초기화 (room only)
@@ -203,9 +202,9 @@ export default function App() {
         <Step5StrokeAssign
           participants={participants}
           rooms={rooms}
-          loadingId={loadingId}
+          loadingId={loadingId}                   // ★ 전달 추가
           onScoreChange={handleScoreChange}
-          onManualAssign={handleManualAssign}
+          onManualAssign={handleManualAssign}     // ★ 전달 추가
           onForceAssign={handleForceAssign}
           onAutoAssign={handleAutoAssign}
           onReset={handleReset}
@@ -216,7 +215,6 @@ export default function App() {
       {step === 6 && (
         <Step6StrokeResults
           participants={participants}
-          roomNames={roomNames}
           roomCount={roomCount}
           onPrev={() => setStep(5)}
           onNext={() => setStep(mode === 'stroke' ? 7 : 8)}
