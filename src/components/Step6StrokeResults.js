@@ -1,15 +1,23 @@
 // src/components/Step6StrokeResults.js
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import styles from './Step6StrokeResults.module.css';
 
 export default function Step6StrokeResults({
-  participants,  // [{ id, group, nickname, handicap, score, room }, …]
-  roomCount,     // 총 방 개수
-  onPrev,        // ← 이전
-  onNext         // 다음 →
+  participants,    // [{ id, group, nickname, handicap, score, room }, …]
+  roomCount,       // 총 방 개수
+  roomNames = [],  // 2페이지에서 설정한 방 이름 목록
+  onPrev,          // ← 이전
+  onNext           // 다음 →
 }) {
   const maxRows = 4;
+
+  // ★ 방 이름 배열 준비: 빈 문자열이면 기본 "n번방"으로
+  const headers = Array.from({ length: roomCount }, (_, i) =>
+    roomNames[i] && roomNames[i].trim() !== ''
+      ? roomNames[i]
+      : `${i + 1}번방`
+  );
 
   // 방별 참가자 묶기
   const byRoom = Array.from({ length: roomCount }, () => []);
@@ -41,12 +49,11 @@ export default function Step6StrokeResults({
       const sc = p.score ?? 0;
       sumHandicap += hd;
       sumScore += sc;
-      // **반땅룰**: 최고점자 한 명만 Math.floor(sc/2)
       const banddang = i === maxIdx ? Math.floor(sc / 2) : sc;
       sumBanddang += banddang;
       const result = banddang - hd;
       sumResult += result;
-      return { ...p, score: sc, banddang, result };  // ★ banddang 포함
+      return { ...p, score: sc, banddang, result };
     });
 
     return { detail, sumHandicap, sumScore, sumBanddang, sumResult };
@@ -59,7 +66,11 @@ export default function Step6StrokeResults({
     .map((r, idx) => ({ roomIdx: r.roomIdx, rank: idx + 1 }));
   const rankMap = Object.fromEntries(ranks.map(r => [r.roomIdx, r.rank]));
 
-  const rooms = Array.from({ length: roomCount }, (_, i) => i);
+  // ★ 디버깅: 방 이름과 함께 계산 결과 확인
+  useEffect(() => {
+    console.log('[Step6] headers:', headers);
+    console.log('[Step6] resultByRoom detail:', resultByRoom);
+  }, [headers, resultByRoom]);
 
   return (
     <div className={styles.step}>
@@ -73,15 +84,15 @@ export default function Step6StrokeResults({
         <table className={styles.table}>
           <thead>
             <tr>
-              {rooms.map(r => (
-                <th key={r} colSpan={2} className={styles.header}>
-                  {r + 1}번방
+              {headers.map((label, idx) => (
+                <th key={idx} colSpan={2} className={styles.header}>
+                  {label}
                 </th>
               ))}
             </tr>
             <tr>
-              {rooms.map(r => (
-                <React.Fragment key={r}>
+              {headers.map((_, idx) => (
+                <React.Fragment key={idx}>
                   <th className={styles.header}>닉네임</th>
                   <th className={styles.header}>G핸디</th>
                 </React.Fragment>
@@ -126,15 +137,15 @@ export default function Step6StrokeResults({
         <table className={styles.table}>
           <thead>
             <tr>
-              {rooms.map(r => (
-                <th key={r} colSpan={5} className={styles.header}>
-                  {r + 1}번방
+              {headers.map((label, idx) => (
+                <th key={idx} colSpan={5} className={styles.header}>
+                  {label}
                 </th>
               ))}
             </tr>
             <tr>
-              {rooms.map(r => (
-                <React.Fragment key={r}>
+              {headers.map((_, idx) => (
+                <React.Fragment key={idx}>
                   <th className={styles.header}>닉네임</th>
                   <th className={styles.header}>G핸디</th>
                   <th className={styles.header}>점수</th>
@@ -149,7 +160,7 @@ export default function Step6StrokeResults({
               <tr key={ri}>
                 {resultByRoom.map((room, ci) => {
                   const p = room.detail[ri];
-                  const banddang = p.banddang != null ? p.banddang : 0;  // ★ 올바른 값 표시
+                  const banddang = p.banddang != null ? p.banddang : 0;
                   return (
                     <React.Fragment key={ci}>
                       <td className={styles.cell}>{p.nickname}</td>
@@ -186,10 +197,10 @@ export default function Step6StrokeResults({
               ))}
             </tr>
             <tr>
-              {rooms.map(r => (
-                <React.Fragment key={r}>
+              {headers.map((_, idx) => (
+                <React.Fragment key={idx}>
                   <td colSpan={4} className={styles.footerBlank} />
-                  <td className={styles.footerRank}>{rankMap[r]}등</td>
+                  <td className={styles.footerRank}>{rankMap[idx]}등</td>
                 </React.Fragment>
               ))}
             </tr>

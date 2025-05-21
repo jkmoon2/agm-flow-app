@@ -7,7 +7,7 @@ export default function Step5StrokeAssign({
   loadingId,         // id of participant currently assigning
   onScoreChange,     // (id, value) => void
   onManualAssign,    // (id) => void
-  onForceAssign,     // (id, roomNumber) => void
+  onForceAssign,     // (id, roomNumber|null) => void
   onPrev,            // () => void
   onAutoAssign,      // () => void
   onReset,           // () => void
@@ -15,7 +15,6 @@ export default function Step5StrokeAssign({
 }) {
   const [forceSelectingId, setForceSelectingId] = useState(null);
 
-  // ★ 추가: 디버깅용 console.log
   useEffect(() => {
     console.log('[Step5] loadingId:', loadingId);
     console.log('[Step5] participants rooms:', participants.map(p => ({ id: p.id, room: p.room })));
@@ -37,64 +36,78 @@ export default function Step5StrokeAssign({
       </div>
 
       <div className={styles.participantTable}>
-        {participants.map(p => (
-          <div className={styles.participantRow} key={p.id}>
-            <div className={`${styles.cell} ${styles.group}`}>
-              <input type="text" value={`${p.group}조`} disabled />
-            </div>
-            <div className={`${styles.cell} ${styles.nickname}`}>
-              <input type="text" value={p.nickname} disabled />
-            </div>
-            <div className={`${styles.cell} ${styles.handicap}`}>
-              <input type="text" value={p.handicap} disabled />
-            </div>
-            <div className={`${styles.cell} ${styles.score}`}>
-              <input
-                type="number"
-                value={p.score ?? ''}
-                onChange={e => onScoreChange(p.id, e.target.value)}
-              />
-            </div>
+        {participants.map(p => {
+          const isDisabled = loadingId === p.id || p.room !== null;
+          return (
+            <div className={styles.participantRow} key={p.id}>
+              <div className={`${styles.cell} ${styles.group}`}>
+                <input type="text" value={`${p.group}조`} disabled />
+              </div>
+              <div className={`${styles.cell} ${styles.nickname}`}>
+                <input type="text" value={p.nickname} disabled />
+              </div>
+              <div className={`${styles.cell} ${styles.handicap}`}>
+                <input type="text" value={p.handicap} disabled />
+              </div>
+              <div className={`${styles.cell} ${styles.score}`}>
+                <input
+                  type="number"
+                  value={p.score ?? ''}
+                  onChange={e => onScoreChange(p.id, e.target.value)}
+                />
+              </div>
 
-            {/* ★ 수정: room !== null 로만 disabled 체크 */}
-            <div className={`${styles.cell} ${styles.manual}`}>
-              <button
-                className={styles.smallBtn}
-                disabled={loadingId === p.id || p.room !== null}
-                onClick={() => onManualAssign(p.id)}
-              >
-                {loadingId === p.id
-                  ? <span className={styles.spinner}/>
-                  : '수동'}
-              </button>
-            </div>
+              <div className={`${styles.cell} ${styles.manual}`}>
+                <button
+                  className={styles.smallBtn}
+                  disabled={isDisabled}
+                  onClick={() => onManualAssign(p.id)}
+                >
+                  {loadingId === p.id
+                    ? <span className={styles.spinner}/>
+                    : '수동'}
+                </button>
+              </div>
 
-            <div className={`${styles.cell} ${styles.force}`} style={{ position: 'relative' }}>
-              <button
-                className={styles.smallBtn}
-                onClick={() => setForceSelectingId(p.id)}
-              >
-                강제
-              </button>
-              {forceSelectingId === p.id && (
-                <div className={styles.forceMenu}>
-                  {rooms.map(r => (
+              <div className={`${styles.cell} ${styles.force}`} style={{ position: 'relative' }}>
+                <button
+                  className={styles.smallBtn}
+                  onClick={() => setForceSelectingId(p.id)}
+                >
+                  강제
+                </button>
+
+                {forceSelectingId === p.id && (
+                  <div className={styles.forceMenu}>
+                    {rooms.map(r => (
+                      <div
+                        key={r}
+                        className={styles.forceOption}
+                        onClick={() => {
+                          onForceAssign(p.id, r);
+                          setForceSelectingId(null);
+                        }}
+                      >
+                        {r}번 방
+                      </div>
+                    ))}
+
+                    {/* ★ 마지막에 취소 옵션 추가 */}
                     <div
-                      key={r}
                       className={styles.forceOption}
                       onClick={() => {
-                        onForceAssign(p.id, r);
+                        onForceAssign(p.id, null);
                         setForceSelectingId(null);
                       }}
                     >
-                      {r}번 방
+                      취소
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className={styles.stepFooter}>

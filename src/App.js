@@ -24,16 +24,14 @@ export default function App() {
   const [uploadMethod, setUploadMethod] = useState('');
   const [participants, setParticipants] = useState([]);
 
-  // ★ 수동배정 로딩 표시용
+  // 수동배정 로딩 표시용
   const [loadingId, setLoadingId]   = useState(null);
 
-  // 방 개수 변경 시 룸네임 초기화, 참가자 초기화(3단계에서)
   useEffect(() => {
     setRoomNames(Array(roomCount).fill(''));
     setParticipants([]);
   }, [roomCount]);
 
-  // 3단계: 수동 진입 → 빈 슬롯 세팅
   const initManual = () => {
     setParticipants(
       Array.from({ length: roomCount * 4 }, (_, i) => ({
@@ -47,7 +45,6 @@ export default function App() {
     );
   };
 
-  // 3단계: 엑셀 업로드
   const handleFile = e => {
     const file = e.target.files[0];
     if (!file) return;
@@ -69,7 +66,6 @@ export default function App() {
     reader.readAsBinaryString(file);
   };
 
-  // 5단계: 점수 입력
   const handleScoreChange = (id, value) => {
     setParticipants(prev =>
       prev.map(p =>
@@ -80,12 +76,11 @@ export default function App() {
     );
   };
 
-  // 5단계: 수동배정 (1회, 1.2초 딜레이, 단일 alert, spinner 효과)
   const handleManualAssign = id => {
     const p = participants.find(x => x.id === id);
     if (!p || !p.group || p.room != null) return;
 
-    setLoadingId(id);  // ★ 로딩 시작
+    setLoadingId(id);
     setTimeout(() => {
       const occupied = participants
         .filter(x => x.group === p.group && x.room != null)
@@ -102,12 +97,11 @@ export default function App() {
           x.id === id ? { ...x, room: choice } : x
         )
       );
-      setLoadingId(null);  // ★ 로딩 종료
+      setLoadingId(null);
       alert(`${p.nickname}님은 ${choice}번 방에 배정되었습니다.`);
     }, 1200);
   };
 
-  // 5단계: 자동배정 (existing manual preserved, only fill free slots)
   const handleAutoAssign = () => {
     setParticipants(prev => {
       const next = [...prev];
@@ -130,8 +124,17 @@ export default function App() {
     });
   };
 
-  // 5단계: 강제배정 (swap or move, single alert)
+  // ★ 수정된 handleForceAssign: toRoom === null 이면 단순 취소(원상복귀)
   const handleForceAssign = (id, toRoom) => {
+    if (toRoom === null) {
+      // 취소: 해당 참가자 방 해제
+      setParticipants(prev =>
+        prev.map(x =>
+          x.id === id ? { ...x, room: null } : x
+        )
+      );
+      return;
+    }
     const p = participants.find(x => x.id === id);
     if (!p || !p.group) return;
     const fromRoom = p.room;
@@ -151,7 +154,6 @@ export default function App() {
     alert(`${p.nickname}님은 ${toRoom}번 방으로 강제배정 완료`);
   };
 
-  // 5단계: 초기화 (room only)
   const handleReset = () => {
     setParticipants(prev =>
       prev.map(p => (p.room != null ? { ...p, room: null } : p))
@@ -202,9 +204,9 @@ export default function App() {
         <Step5StrokeAssign
           participants={participants}
           rooms={rooms}
-          loadingId={loadingId}                   // ★ 전달 추가
+          loadingId={loadingId}
           onScoreChange={handleScoreChange}
-          onManualAssign={handleManualAssign}     // ★ 전달 추가
+          onManualAssign={handleManualAssign}
           onForceAssign={handleForceAssign}
           onAutoAssign={handleAutoAssign}
           onReset={handleReset}
@@ -216,6 +218,7 @@ export default function App() {
         <Step6StrokeResults
           participants={participants}
           roomCount={roomCount}
+          roomNames={roomNames}
           onPrev={() => setStep(5)}
           onNext={() => setStep(mode === 'stroke' ? 7 : 8)}
         />
