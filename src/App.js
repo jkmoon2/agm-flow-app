@@ -220,7 +220,7 @@ export default function App() {
           roomCount={roomCount}
           roomNames={roomNames}
           onPrev={() => setStep(5)}
-          onNext={() => setStep(mode === 'stroke' ? 7 : 8)}
+          onNext={() => setStep(1)}    // ★ "홈" 버튼 누르면 1페이지로
         />
       )}
     </div>
