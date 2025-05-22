@@ -152,3 +152,14 @@
 .tableContainer .table tfoot tr:first-child td {
   background: #f0f0f0 !important;
 }
+
+.dropdownMenu {
+  position: absolute;
+  top: 84px;      /* 기존 inline top 값과 동일 */
+  right: 16px;    /* 기존 inline right 값과 동일 */
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  z-index: 9999;        /* 최상위로 올려서 다른 레이어보다 위에 표시 */
+  pointer-events: auto; /* 반드시 클릭 이벤트 받기 */
+}
