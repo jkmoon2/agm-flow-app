@@ -1,165 +1,120 @@
-/* src/components/Step6StrokeResults.module.css */
-
 .step {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
 }
-
 /* 1차 헤더 */
 .stepHeader {
-  margin: 0 0 4px 0;
+  margin-bottom: 4px;
 }
 .stepHeader h3 {
-  margin: 0;
-  font-size: 18px;
   text-align: center;
+  font-size: 18px;
+  margin: 0;
   padding-bottom: 4px;
   border-bottom: 1px solid #ccc;
 }
 
+/* “선택” 버튼 위치 */
+.selectButton {
+  position: absolute;
+  top: 48px;    /* 위/아래 중앙정렬에 맞춰 약간 위로 */
+  right: 16px;  
+  z-index: 10;
+}
+
+/* 드롭다운 메뉴 (세로 정렬) */
+.dropdownMenu {
+  position: absolute;
+  top: 80px;
+  right: 16px;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;  /* ← 세로형 고정 */
+  gap: 4px;
+  z-index: 20;
+}
+.dropdownMenu label {
+  cursor: pointer;
+  user-select: none;
+}
+.dropdownMenu hr {
+  margin: 4px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+/* 다운로드 버튼 공통 */
+.actions {
+  margin: 8px 0;
+}
+.actions button {
+  margin-right: 8px;
+}
+
 /* 테이블 컨테이너 */
 .tableContainer {
-  margin: 8px 6px;
-  flex: 1;
+  margin: 0 6px 12px;
   overflow-x: auto;
   background: #fff;
   border: 1px solid #ddd;
+  flex: 1;
   position: relative;
 }
-
-/* 표 제목: 좌측 정렬 + 고정 */
-.tableContainer .tableTitle {
+/* 테이블 제목 */
+.tableTitle {
   position: sticky;
   top: 0;
-  left: 0;
-  z-index: 2;
   background: #fff;
   padding: 6px 8px;
   font-size: 16px;
-  color: #333;
-  text-align: left;
   margin: 0;
+  z-index: 2;
 }
 
 /* 공통 테이블 스타일 */
 .table {
+  width: max-content;
   border-collapse: collapse;
-  width: auto;
-  min-width: max-content;
-  table-layout: auto;
 }
-
-/* 헤더 셀 */
 .header {
   border: 1px solid #ccc;
   background: #f0f0f0;
   padding: 4px 8px;
   font-weight: 600;
   text-align: center;
-  white-space: nowrap;
 }
-
-/* 일반 셀 */
 .cell {
   border: 1px solid #eee;
   padding: 4px 8px;
   text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
-
-/* 요약(합계/순위) 셀 기본 */
-.footerLabel,
-.footerValue,
-.footerBanddang,
-.footerResult,
-.footerRank {
-  border: 1px solid #eee;
+.footerLabel, .footerValue, .footerBanddang, .footerResult, .footerBlank, .footerRank {
   padding: 4px 8px;
-  text-align: center;
+  border: 1px solid #eee;
   font-weight: bold;
 }
-.footerValue    { color: #000; }
-.footerBanddang { color: blue; }
-.footerResult   { color: red; }
-.footerRank     { color: blue; }
+.footerBlank {
+  background: transparent;
+}
+.footerRank { color: blue; }
 
-/* 하단 버튼 */
+/* 하단 */
 .stepFooter {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   padding: 6px;
 }
 .stepFooter button {
   flex: 1;
   height: 36px;
   line-height: 36px;
-  font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
   background: #f0f0f0;
-  color: #333;
   cursor: pointer;
-  transition: background 0.2s ease;
 }
-.stepFooter button:hover {
-  background: #e0e0e0;
-}
-.stepFooter button:active {
-  background: #d0d0d0;
-}
-
-/* ────────────── 색상 오버라이드 ────────────── */
-
-/* 방배정표 (두 번째 tableContainer) */
-.step > .tableContainer:nth-child(2) .table tbody tr > td,
-.step > .tableContainer:nth-child(2) .table tfoot tr > td {
-  color: #000 !important;
-}
-.step > .tableContainer:nth-child(2) .table tbody tr > td:nth-child(2n),
-.step > .tableContainer:nth-child(2) .table tfoot tr > td:nth-child(2n) {
-  color: blue !important;
-}
-
-/* 빈칸 최소 너비 추가 */
-.step > .tableContainer:nth-child(2) .cell {
-  min-width: 80px;
-}
-
-/* 최종결과표 (세 번째 tableContainer) */
-.step > .tableContainer:nth-child(3) .table tbody tr > td,
-.step > .tableContainer:nth-child(3) .table tfoot tr > td {
-  color: #000 !important;
-}
-.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n+4),
-.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n+4) {
-  color: blue !important;
-}
-.step > .tableContainer:nth-child(3) .table tbody tr > td:nth-child(5n),
-.step > .tableContainer:nth-child(3) .table tfoot tr > td:nth-child(5n) {
-  color: red !important;
-}
-.step > .tableContainer:nth-child(3) .table tfoot tr > td.footerRank {
-  color: blue !important;
-  background: transparent !important;
-}
-
-/* ───────── 합계 라인 배경색 ───────── */
-
-/* 첫 번째 tfoot 행(합계)에만 헤더 배경색 적용 */
-.tableContainer .table tfoot tr:first-child td {
-  background: #f0f0f0 !important;
-}
-
-.dropdownMenu {
-  position: absolute;
-  top: 84px;      /* 기존 inline top 값과 동일 */
-  right: 16px;    /* 기존 inline right 값과 동일 */
-  background: #fff;
-  border: 1px solid #ccc;
-  padding: 8px;
-  z-index: 9999;        /* 최상위로 올려서 다른 레이어보다 위에 표시 */
-  pointer-events: auto; /* 반드시 클릭 이벤트 받기 */
-}
+.stepFooter button:hover { background: #e0e0e0; }
