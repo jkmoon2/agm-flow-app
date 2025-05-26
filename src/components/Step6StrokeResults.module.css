@@ -190,22 +190,33 @@
 .dropdownMenu {
   position: absolute;
   top: 100%;      /* 버튼 바로 아래 */
-  right: 0;
-  margin-top:4px; /* 살짝 띄워도 좋고 */
+  right: 0;       /* 래퍼의 우측 정렬 유지 */
+  margin-top: 4px;
+  padding: 8px;
   background: #fff;
-  border:1px solid #ccc;
-  padding:8px;
-  display: flex;
-  flex-direction: column;
-  gap:4px;
-  z-index:999;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, max-content));
+  gap: 4px 12px;  /* 행간 4px, 열간 12px */
+  align-items: center;
+  z-index: 999;
 }
+
+/* 구분선 */
+.dropdownMenu hr {
+  grid-column: 1 / -1;
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 4px 0;
+}
+
 .dropdownMenu label {
+  font-size: 13px;
   white-space: nowrap;
-  font-size:14px;
+  user-select: none;
 }
 
 .footerRank {
-  color: blue;
-  /* !important 는 보통 불필요합니다 */
+  color: blue !important;
 }

@@ -136,39 +136,56 @@ export default function Step6StrokeResults({
         <h3>6. 스트로크 결과표</h3>
       </div>
 
-     {/* 1) 선택 버튼 + 드롭다운 래퍼 */}
+     {/* 1) 선택 버튼 + 메뉴 래퍼 */}
      <div className={styles.selectWrapper}>
        <button
          className={styles.selectButton}
-         onClick={()=>setMenuOpen(o=>!o)}
+         onClick={() => setMenuOpen(o => !o)}
        >
          선택
        </button>
+
        {menuOpen && (
          <div className={styles.dropdownMenu}>
-           {headers.map((h,i)=>(
+           {/* 1~N번방 체크 */}
+           {headers.map((h, i) => (
              <label key={i}>
                <input
                  type="checkbox"
                  checked={!hiddenRooms.has(i)}
-                 onChange={()=>{ toggleRoom(i); setMenuOpen(false); }}
-               /> {h}
+                 onChange={() => {
+                   toggleRoom(i);
+                   setMenuOpen(false);
+                 }}
+               />
+               {h}
              </label>
            ))}
-           <hr/>
+
+           <hr />
+
+           {/* 점수 · 반땅 체크 */}
            <label>
              <input
                type="checkbox"
                checked={visibleMetrics.score}
-               onChange={()=>{ toggleMetric('score'); setMenuOpen(false); }}
-             /> 점수
+               onChange={() => {
+                 toggleMetric("score");
+                 setMenuOpen(false);
+               }}
+             />{" "}
+             점수
            </label>
            <label>
              <input
                type="checkbox"
                checked={visibleMetrics.banddang}
-               onChange={()=>{ toggleMetric('banddang'); setMenuOpen(false); }}
-             /> 반땅
+               onChange={() => {
+                 toggleMetric("banddang");
+                 setMenuOpen(false);
+               }}
+             />{" "}
+             반땅
            </label>
          </div>
        )}
