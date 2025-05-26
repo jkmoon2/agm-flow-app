@@ -1,120 +1,211 @@
 .step {
-  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative;
+  overflow: visible;  /* fixed footer 감싸는 부모가 잘라먹지 않도록 */
 }
-/* 1차 헤더 */
+
+/* 헤더 */
 .stepHeader {
-  margin-bottom: 4px;
+  margin: 0 0 4px 0;
+  position: relative;
 }
 .stepHeader h3 {
-  text-align: center;
-  font-size: 18px;
   margin: 0;
+  font-size: 18px;
+  text-align: center;
   padding-bottom: 4px;
   border-bottom: 1px solid #ccc;
 }
 
-/* “선택” 버튼 위치 */
+/* 선택 버튼 */
 .selectButton {
   position: absolute;
-  top: 48px;    /* 위/아래 중앙정렬에 맞춰 약간 위로 */
-  right: 16px;  
+  /* 최종결과표 제목라인 높이(헤더 하단) 기준으로 */
+  top: calc( (32px /* 헤더 높이 */ + 4px /* 헤더-컨테이너 gap */) );
+  right: 6px;           /* 화면 오른쪽 여백 조정 */
   z-index: 10;
 }
 
-/* 드롭다운 메뉴 (세로 정렬) */
+/* 드롭다운 메뉴 (세로형) */
 .dropdownMenu {
   position: absolute;
-  top: 80px;
+  top: calc(16px + 28px + 4px);
   right: 16px;
   background: #fff;
   border: 1px solid #ccc;
   padding: 8px;
   display: flex;
-  flex-direction: column;  /* ← 세로형 고정 */
+  flex-direction: column;
   gap: 4px;
-  z-index: 20;
+  z-index: 10;
 }
 .dropdownMenu label {
-  cursor: pointer;
-  user-select: none;
-}
-.dropdownMenu hr {
-  margin: 4px 0;
-  border: none;
-  border-top: 1px solid #eee;
+  white-space: nowrap;
+  font-size: 14px;
 }
 
-/* 다운로드 버튼 공통 */
-.actions {
-  margin: 8px 0;
+/* 각 테이블 아래 JPG/PDF 버튼 래퍼 */
+.actionButtons {
+  margin: 4px 6px 0;
+  text-align: left;
 }
-.actions button {
+.actionButtons button {
   margin-right: 8px;
+  padding: 4px 8px;
+  font-size: 14px;
 }
 
 /* 테이블 컨테이너 */
 .tableContainer {
-  margin: 0 6px 12px;
+  margin: 8px 6px;
+  /* flex-grow 제거: 내용 높이만큼만 차지 */
+  flex: none;
   overflow-x: auto;
   background: #fff;
   border: 1px solid #ddd;
-  flex: 1;
   position: relative;
+  margin-top: 32px;   /* 버튼 공간(약 32px) 만큼 아래로 내리기 */
 }
-/* 테이블 제목 */
-.tableTitle {
+
+/* 표 제목 */
+.tableContainer .tableTitle {
   position: sticky;
   top: 0;
+  left: 0;
+  z-index: 2;
   background: #fff;
   padding: 6px 8px;
   font-size: 16px;
+  text-align: left;
   margin: 0;
-  z-index: 2;
 }
 
-/* 공통 테이블 스타일 */
+/* 공통 테이블 */
 .table {
-  width: max-content;
   border-collapse: collapse;
+  width: auto;
+  min-width: max-content;
+  table-layout: auto;
 }
+
+/* 헤더 셀 */
 .header {
   border: 1px solid #ccc;
   background: #f0f0f0;
   padding: 4px 8px;
   font-weight: 600;
   text-align: center;
+  white-space: nowrap;
 }
+
+/* 일반 셀 */
 .cell {
   border: 1px solid #eee;
   padding: 4px 8px;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.footerLabel, .footerValue, .footerBanddang, .footerResult, .footerBlank, .footerRank {
-  padding: 4px 8px;
+
+/* 합계/결과 셀 */
+.footerLabel,
+.footerValue,
+.footerBanddang,
+.footerResult,
+.footerRank {
   border: 1px solid #eee;
+  padding: 4px 8px;
+  text-align: center;
   font-weight: bold;
 }
-.footerBlank {
-  background: transparent;
-}
-.footerRank { color: blue; }
 
-/* 하단 */
+/* 합계 중앙정렬 & 배경 */
+.tableContainer .table tfoot tr:first-child td {
+  background: #f0f0f0 !important;
+  text-align: center !important;
+}
+
+/* 최종결과표 반땅·결과 합계 색상 */
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:first-child td.footerBanddang {
+  color: blue  !important;
+}
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:first-child td.footerResult {
+  color: red   !important;
+}
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:last-child td.footerRank {
+  color: blue !important;
+}
+
+/* 하단 버튼 */
 .stepFooter {
   display: flex;
-  gap: 6px;
-  padding: 6px;
+  gap: 8px;
+  margin-top: auto;      /* 여기가 핵심: 푸터를 맨 아래로 끌어내립니다 */
+  padding: 6px;          /* 3페이지와 동일한 여백 */
+  background: transparent;  /* 배경 없애기 */
 }
 .stepFooter button {
   flex: 1;
-  height: 36px;
-  line-height: 36px;
+  height: 40px;          /* 3페이지 입력박스 높이와 동일하게 */
+  line-height: 40px;     /* 텍스트 세로 중앙정렬 */
+  font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
   background: #f0f0f0;
+  color: #333;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
-.stepFooter button:hover { background: #e0e0e0; }
+.stepFooter button:hover   { background: #e0e0e0; }
+.stepFooter button:active  { background: #d0d0d0; }
+
+.resultContainer .table tfoot tr:first-child td.footerBanddang {
+  /* 반땅 합계 파란색 */
+  color: blue !important;
+}
+
+.resultContainer .table tfoot tr:first-child td.footerResult {
+  /* 결과 합계 빨간색 */
+  color: red !important;
+}
+
+/* 1) 래퍼를 상대위치로 잡아줍니다 */
+.selectWrapper {
+  position: absolute;
+  top: 16px;   /* 제목 아래 적당한 여백 */
+  right: 16px;
+  /* width:auto; height:auto; */
+}
+
+/* 2) 버튼은 그냥 inline-block 정도로 */
+.selectButton {
+  padding: 4px 8px;
+  font-size:14px;
+}
+
+/* 3) 드롭다운은 래퍼에 대해 아래로 붙입니다 */
+.dropdownMenu {
+  position: absolute;
+  top: 100%;      /* 버튼 바로 아래 */
+  right: 0;
+  margin-top:4px; /* 살짝 띄워도 좋고 */
+  background: #fff;
+  border:1px solid #ccc;
+  padding:8px;
+  display: flex;
+  flex-direction: column;
+  gap:4px;
+  z-index:999;
+}
+.dropdownMenu label {
+  white-space: nowrap;
+  font-size:14px;
+}
+
+.footerRank {
+  color: blue;
+  /* !important 는 보통 불필요합니다 */
+}
