@@ -261,3 +261,8 @@
   /* 결과 합계 빨강 */
   color: red !important;
 }
+
+.step > .tableContainer.resultContainer
+  .table tfoot tr:last-child td.footerRank {
+  background-color: rgba(255, 255, 0, 0.1) !important;
+}

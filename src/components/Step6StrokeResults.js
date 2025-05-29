@@ -163,28 +163,29 @@ export default function Step6StrokeResults({
 
             <hr/>
 
-            <label>
-              <input
-                type="checkbox"
-                checked={visibleMetrics.score}
-                onChange={() => {
-                  toggleMetric('score');
-                  setMenuOpen(false);
-                }}
-              /> 점수
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={visibleMetrics.banddang}
-                onChange={() => {
-                  toggleMetric('banddang');
-                  setMenuOpen(false);
-                }}
-              /> 반땅
-            </label>
-          </div>
-        )}
+        {/* 점수·반땅 체크 */}
+        <label key="score">
+          <input
+            type="checkbox"
+            checked={visibleMetrics.score}
+            onChange={() => {
+              toggleMetric("score");
+              setMenuOpen(false);
+            }}
+          /> 점수
+        </label>
+        <label key="banddang">
+          <input
+            type="checkbox"
+            checked={visibleMetrics.banddang}
+            onChange={() => {
+              toggleMetric("banddang");
+              setMenuOpen(false);
+            }}
+          /> 반땅
+        </label>
+      </div>
+    )}
       </div>
 
       {/* 방배정표 */}
