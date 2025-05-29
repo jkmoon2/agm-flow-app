@@ -189,3 +189,75 @@
 .step > .tableContainer:nth-of-type(3) .table tfoot tr:last-child td.footerRank {
   background-color: rgba(255, 255, 0, 0.1) !important;
 }
+
+/* 1) “선택” 버튼을 방배정표 우측 외곽선 끝에 딱 붙이기 */
+.selectWrapper {
+  /* 기존 margin: 2px 16px 2px; 그대로 두고, 텍스트 우측 정렬 유지 */
+  text-align: right;
+}
+.selectWrapper .selectButton {
+  /* inline-block 이므로 right padding 대신 margin-right 로 외곽선까지 간격을 0으로 */
+  margin-right: 6px;   /* .tableContainer 가 margin-right:6px 이므로 동일하게 */
+}
+
+/* 2) 방배정표(JPG/PDF 포함) 전체를 위로 8px씩 당겨서 제목과 좀 더 가까이 붙이기 */
+.tableContainer:first-of-type {
+  margin-top: 4px !important;   /* 원래 8px → 4px */
+}
+.actionButtons:first-of-type {
+  margin-top: 0 !important;     /* 원래 4px → 0px */
+}
+
+/* 3) 최종결과표 합계 셀 색상 확실하게 적용 (반땅=파랑, 결과=빨강) */
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:first-child td.footerBanddang {
+  color: #0066cc !important;    /* 보다 진한 파랑 */
+}
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:first-child td.footerResult {
+  color: #cc0000 !important;    /* 보다 진한 빨강 */
+}
+
+/* 4) 모든 박스 내 경계선을 얇은 실선(#ddd 1px)으로 통일 */
+.tableContainer .table th,
+.tableContainer .table td {
+  border: 1px solid #ddd !important;
+}
+
+/* ───────── 1) 외곽 테두리선 완전 제거 ───────── */
+.tableContainer {
+  /* (기존 border:2px solid #ccc; 등은 덮어씌워집니다) */
+  border: none !important;
+}
+
+/* ───────── 2) 제목과 첫 번째 테이블 사이 간격 30% 축소 ───────── */
+.stepHeader {
+  /* 원래 margin-bottom:4px → 4px × 0.7 = 2.8px, 반올림해서 3px 사용 */
+  margin-bottom: 3px !important;
+}
+.tableContainer:first-of-type {
+  /* 원래 margin-top:8px → 8px × 0.7 = 5.6px, 반올림해서 6px 사용 */
+  margin-top: 6px !important;
+}
+
+/* ───────── 3) “선택” 버튼을 표 우측 경계에 딱 붙이기 ───────── */
+.selectWrapper {
+  /* 테이블의 좌우 여백(margin: 8px 6px)이 6px 이므로 동일하게 */
+  margin: 0 6px !important;
+  text-align: right !important;
+}
+.selectWrapper .selectButton {
+  /* 추가 여백 전부 제거해서 표 경계선과 나란히 */
+  margin: 0 !important;
+  padding: 0 12px !important;
+  height: 32px !important;
+  line-height: 32px !important;
+}
+
+/* ───────── 4) 최종결과표 합계 색상 보정 ───────── */
+.resultContainer .footerBanddang {
+  /* 반땅 합계 파랑 */
+  color: blue !important;
+}
+.resultContainer .footerResult {
+  /* 결과 합계 빨강 */
+  color: red !important;
+}
