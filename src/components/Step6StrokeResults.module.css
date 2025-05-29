@@ -1,12 +1,13 @@
+/* ───────── step wrapper ───────── */
 .step {
   display: flex;
   flex-direction: column;
   height: 100%;
   position: relative;
-  overflow: visible;  /* fixed footer 감싸는 부모가 잘라먹지 않도록 */
+  overflow: visible;
 }
 
-/* 헤더 */
+/* ───────── 헤더 ───────── */
 .stepHeader {
   margin: 0 0 4px 0;
   position: relative;
@@ -19,34 +20,51 @@
   border-bottom: 1px solid #ccc;
 }
 
-/* 선택 버튼 */
-.selectButton {
-  position: absolute;
-  /* 최종결과표 제목라인 높이(헤더 하단) 기준으로 */
-  top: calc( (32px /* 헤더 높이 */ + 4px /* 헤더-컨테이너 gap */) );
-  right: 6px;           /* 화면 오른쪽 여백 조정 */
-  z-index: 10;
+/* ───────── 선택 버튼 + 드롭다운 래퍼 ───────── */
+.selectWrapper {
+  position: relative;
+  margin: 2px 16px 2px; /* 상/하 2px로 줄여서 헤더–표 간격 최소화 */
+  text-align: right;
+}
+.selectWrapper .selectButton {
+  display: inline-block;
+  padding: 0 12px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  z-index: 10; /* 드롭다운보다 위 */
 }
 
-/* 드롭다운 메뉴 (세로형) */
-.dropdownMenu {
+/* 드롭다운 메뉴 (세로형, 버튼 바로 아래) */
+.selectWrapper .dropdownMenu {
   position: absolute;
-  top: calc(16px + 28px + 4px);
-  right: 16px;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
   background: #fff;
   border: 1px solid #ccc;
   padding: 8px;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  z-index: 10;
+  z-index: 9999;  /* 최상위로 렌더링 */
 }
-.dropdownMenu label {
+.selectWrapper .dropdownMenu hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 4px 0;
+}
+.selectWrapper .dropdownMenu label {
   white-space: nowrap;
+  cursor: pointer;
   font-size: 14px;
 }
 
-/* 각 테이블 아래 JPG/PDF 버튼 래퍼 */
+/* ───────── 각 테이블 아래 JPG/PDF 버튼 ───────── */
 .actionButtons {
   margin: 4px 6px 0;
   text-align: left;
@@ -57,19 +75,15 @@
   font-size: 14px;
 }
 
-/* 테이블 컨테이너 */
+/* ───────── 테이블 컨테이너 ───────── */
 .tableContainer {
   margin: 8px 6px;
-  /* flex-grow 제거: 내용 높이만큼만 차지 */
   flex: none;
   overflow-x: auto;
   background: #fff;
-  border: 1px solid #ddd;
+  border: 2px solid #ccc; /* 외곽선 두께 강화 */
   position: relative;
-  margin-top: 32px;   /* 버튼 공간(약 32px) 만큼 아래로 내리기 */
 }
-
-/* 표 제목 */
 .tableContainer .tableTitle {
   position: sticky;
   top: 0;
@@ -80,29 +94,29 @@
   font-size: 16px;
   text-align: left;
   margin: 0;
+  border-bottom: 1px solid #bbb; /* 조금 더 연한 선으로 */
 }
 
-/* 공통 테이블 */
+/* ───────── 공통 테이블 ───────── */
 .table {
   border-collapse: collapse;
   width: auto;
   min-width: max-content;
   table-layout: auto;
 }
-
-/* 헤더 셀 */
+/* 내부 실선 약간 얇게 */
+.table th,
+.table td {
+  border: 1px solid #ddd; 
+}
 .header {
-  border: 1px solid #ccc;
-  background: #f0f0f0;
+  background: #f7f7f7;
   padding: 4px 8px;
   font-weight: 600;
   text-align: center;
   white-space: nowrap;
 }
-
-/* 일반 셀 */
 .cell {
-  border: 1px solid #eee;
   padding: 4px 8px;
   text-align: center;
   white-space: nowrap;
@@ -110,113 +124,68 @@
   text-overflow: ellipsis;
 }
 
-/* 합계/결과 셀 */
+/* ───────── 합계/결과 셀 ───────── */
 .footerLabel,
 .footerValue,
 .footerBanddang,
 .footerResult,
 .footerRank {
-  border: 1px solid #eee;
   padding: 4px 8px;
   text-align: center;
   font-weight: bold;
 }
-
-/* 합계 중앙정렬 & 배경 */
 .tableContainer .table tfoot tr:first-child td {
-  background: #f0f0f0 !important;
+  background: #f7f7f7 !important;
   text-align: center !important;
 }
 
-/* 최종결과표 반땅·결과 합계 색상 */
+/* 최종결과표: 반땅·결과 합계 색상 */
 .step > .tableContainer:nth-of-type(3) .table tfoot tr:first-child td.footerBanddang {
   color: blue  !important;
 }
 .step > .tableContainer:nth-of-type(3) .table tfoot tr:first-child td.footerResult {
   color: red   !important;
 }
+/* 등수 셀 파란색 */
 .step > .tableContainer:nth-of-type(3) .table tfoot tr:last-child td.footerRank {
   color: blue !important;
 }
 
-/* 하단 버튼 */
+/* ───────── 하단 버튼 ───────── */
 .stepFooter {
   display: flex;
   gap: 8px;
-  margin-top: auto;      /* 여기가 핵심: 푸터를 맨 아래로 끌어내립니다 */
-  padding: 6px;          /* 3페이지와 동일한 여백 */
-  background: transparent;  /* 배경 없애기 */
+  margin-top: auto;
+  padding: 6px;
+  background: transparent;
 }
 .stepFooter button {
   flex: 1;
-  height: 40px;          /* 3페이지 입력박스 높이와 동일하게 */
-  line-height: 40px;     /* 텍스트 세로 중앙정렬 */
+  height: 40px;
+  line-height: 40px;
   font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
   background: #f0f0f0;
-  color: #333;
   cursor: pointer;
   transition: background 0.2s ease;
 }
-.stepFooter button:hover   { background: #e0e0e0; }
-.stepFooter button:active  { background: #d0d0d0; }
+.stepFooter button:hover  { background: #e0e0e0; }
+.stepFooter button:active { background: #d0d0d0; }
 
-.resultContainer .table tfoot tr:first-child td.footerBanddang {
-  /* 반땅 합계 파란색 */
-  color: blue !important;
+/* 1) 박스 내 모든 실선을 좀 더 가는 선으로 통일 */
+.table th,
+.table td {
+  border: 1px solid #ddd;  /* 기존보다 좀 더 연한 가는 실선 */
 }
 
-.resultContainer .table tfoot tr:first-child td.footerResult {
-  /* 결과 합계 빨간색 */
-  color: red !important;
+/* 2) 최종결과표 등수 셀 좌/우 선 삭제 */
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:last-child td.footerRank {
+  border-left: none !important;
+  border-right: none !important;
 }
 
-/* 1) 래퍼를 상대위치로 잡아줍니다 */
-.selectWrapper {
-  position: absolute;
-  top: 16px;   /* 제목 아래 적당한 여백 */
-  right: 16px;
-  /* width:auto; height:auto; */
-}
-
-/* 2) 버튼은 그냥 inline-block 정도로 */
-.selectButton {
-  padding: 4px 8px;
-  font-size:14px;
-}
-
-/* 3) 드롭다운은 래퍼에 대해 아래로 붙입니다 */
-.dropdownMenu {
-  position: absolute;
-  top: 100%;      /* 버튼 바로 아래 */
-  right: 0;       /* 래퍼의 우측 정렬 유지 */
-  margin-top: 4px;
-  padding: 8px;
-  background: #fff;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(60px, max-content));
-  gap: 4px 12px;  /* 행간 4px, 열간 12px */
-  align-items: center;
-  z-index: 999;
-}
-
-/* 구분선 */
-.dropdownMenu hr {
-  grid-column: 1 / -1;
-  border: none;
-  border-top: 1px solid #eee;
-  margin: 4px 0;
-}
-
-.dropdownMenu label {
-  font-size: 13px;
-  white-space: nowrap;
-  user-select: none;
-}
-
-.footerRank {
-  color: blue !important;
+/* 3) 최종결과표 등수 셀 배경색 아주 연한 노란색 */
+.step > .tableContainer:nth-of-type(3) .table tfoot tr:last-child td.footerRank {
+  background-color: rgba(255, 255, 0, 0.1) !important;
 }

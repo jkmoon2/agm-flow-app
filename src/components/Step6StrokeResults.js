@@ -145,83 +145,47 @@ export default function Step6StrokeResults({
          선택
        </button>
 
-       {menuOpen && (
-         <div className={styles.dropdownMenu}>
-           {/* 1~N번방 체크 */}
-           {headers.map((h, i) => (
-             <label key={i}>
-               <input
-                 type="checkbox"
-                 checked={!hiddenRooms.has(i)}
-                 onChange={() => {
-                   toggleRoom(i);
-                   setMenuOpen(false);
-                 }}
-               />
-               {h}
-             </label>
-           ))}
+        {menuOpen && (
+          <div className={styles.dropdownMenu}>
+            {headers.map((h, i) => (
+              <label key={i}>
+                <input
+                  type="checkbox"
+                  checked={!hiddenRooms.has(i)}
+                  onChange={() => {
+                    toggleRoom(i);
+                    setMenuOpen(false);
+                  }}
+                />
+                {h}
+              </label>
+            ))}
 
-           <hr />
+            <hr/>
 
-           {/* 점수 · 반땅 체크 */}
-           <label>
-             <input
-               type="checkbox"
-               checked={visibleMetrics.score}
-               onChange={() => {
-                 toggleMetric("score");
-                 setMenuOpen(false);
-               }}
-             />{" "}
-             점수
-           </label>
-           <label>
-             <input
-               type="checkbox"
-               checked={visibleMetrics.banddang}
-               onChange={() => {
-                 toggleMetric("banddang");
-                 setMenuOpen(false);
-               }}
-             />{" "}
-             반땅
-           </label>
-         </div>
-       )}
-     </div>
-
-      {/* 드롭다운 */}
-      {menuOpen && (
-        <div className={styles.dropdownMenu}
-             onClick={()=>setMenuOpen(false)} /* 클릭 시 닫기 */
-        >
-          {headers.map((h,i)=>(
-            <label key={i}>
+            <label>
               <input
                 type="checkbox"
-                checked={!hiddenRooms.has(i)}
-                onChange={()=>toggleRoom(i)}
-              /> {h}
+                checked={visibleMetrics.score}
+                onChange={() => {
+                  toggleMetric('score');
+                  setMenuOpen(false);
+                }}
+              /> 점수
             </label>
-          ))}
-          <hr/>
-          <label>
-            <input
-              type="checkbox"
-              checked={visibleMetrics.score}
-              onChange={()=>toggleMetric('score')}
-            /> 점수
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={visibleMetrics.banddang}
-              onChange={()=>toggleMetric('banddang')}
-            /> 반땅
-          </label>
-        </div>
-      )}
+            <label>
+              <input
+                type="checkbox"
+                checked={visibleMetrics.banddang}
+                onChange={() => {
+                  toggleMetric('banddang');
+                  setMenuOpen(false);
+                }}
+              /> 반땅
+            </label>
+          </div>
+        )}
+      </div>
 
       {/* 방배정표 */}
       <div ref={allocRef} className={styles.tableContainer}>
