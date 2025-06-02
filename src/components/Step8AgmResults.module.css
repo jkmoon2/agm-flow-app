@@ -1,0 +1,195 @@
+/* src/components/Step8AgmResults.module.css */
+
+.step {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+.stepHeader {
+  margin: 0 0 4px 0;
+}
+.stepHeader h3 {
+  margin: 0;
+  font-size: 18px;
+  text-align: center;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+}
+
+.selectWrapper {
+  position: relative;
+  margin: 2px 6px;
+  text-align: right;
+}
+.selectWrapper .selectButton {
+  padding: 0 12px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  z-index: 10;
+}
+.selectWrapper .dropdownMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 9999;
+}
+.selectWrapper .dropdownMenu hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 4px 0;
+}
+.selectWrapper .dropdownMenu label {
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.contentWrapper {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.tableContainer {
+  margin: 8px 6px;
+  flex: none;
+  overflow-x: auto;
+  background: #fff;
+  border: 1px solid #ddd;
+  position: relative;
+}
+.tableContainer .tableTitle {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  background: #fff;
+  padding: 6px 8px;
+  font-size: 16px;
+  text-align: left;
+  margin: 0;
+  border-bottom: 1px solid #bbb;
+}
+
+.table {
+  border-collapse: collapse;
+  width: auto;
+  min-width: max-content;
+  table-layout: auto;
+}
+.table th,
+.table td {
+  border: 1px solid #ddd;
+}
+.header {
+  background: #f7f7f7;
+  padding: 4px 8px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+.cell {
+  padding: 4px 8px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.footerLabel,
+.footerValue,
+.footerBanddang,
+.footerResult,
+.footerRank {
+  padding: 4px 8px;
+  text-align: center;
+  font-weight: bold;
+}
+.tableContainer .table tfoot tr:first-child td {
+  background: #f7f7f7 !important;
+  text-align: center !important;
+}
+.tableContainer .table tfoot tr:first-child td.footerBanddang {
+  color: #0066cc !important;
+}
+.tableContainer .table tfoot tr:first-child td.footerResult {
+  color: #cc0000 !important;
+}
+.tableContainer .table tfoot tr:last-child td.footerRank {
+  background-color: rgba(255, 255, 0, 0.1) !important;
+  color: blue !important;
+}
+
+.teamContainer {
+  margin-top: 12px;
+}
+
+.actionButtons {
+  margin: 4px 6px 0;
+  text-align: left;
+}
+.actionButtons button {
+  margin-right: 8px;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.stepFooter {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding: 6px 6px 12px;
+}
+.stepFooter button {
+  flex: 1;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background: #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.stepFooter button:hover {
+  background: #e0e0e0;
+}
+.stepFooter button:active {
+  background: #d0d0d0;
+}
+
+/* 방 배정/결과표 내 “합계” 셀 */
+.footerValue {
+  font-weight: bold;
+}
+.footerBanddang {
+  font-weight: bold;
+  color: #0066cc;
+}
+.footerResult {
+  font-weight: bold;
+  color: #cc0000;
+}
+.footerRank {
+  font-weight: bold;
+  background-color: rgba(255, 255, 0, 0.1);
+  color: blue;
+}
+
+/* 점수 파란, 결과 빨간 강조 (개인 결과표) */

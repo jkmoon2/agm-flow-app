@@ -118,7 +118,7 @@ export default function Step4Participant({
         <button onClick={() => setStep(3)}>← 이전</button>
         <button onClick={addParticipant}>추가</button>
         <button onClick={delSelected}>삭제</button>
-        <button onClick={() => setStep(mode === "stroke" ? 5 : 7)}>
+        <button onClick={() => setStep(5)}>
           다음 →
         </button>
       </div>
