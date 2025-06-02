@@ -1,11 +1,13 @@
 /* src/components/Step7StrokeAgmAssign.module.css */
 
+/* ─── Container ─── */
 .step {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
+/* ─── 상단 헤더 ─── */
 .stepHeader {
   margin: 0 0 4px 0;
 }
@@ -17,6 +19,7 @@
   border-bottom: 1px solid #ccc;
 }
 
+/* ─── 테이블 헤더 ─── */
 .participantRowHeader {
   display: flex;
   align-items: center;
@@ -34,6 +37,7 @@
   white-space: nowrap;
 }
 
+/* flex 분배 */
 .participantRowHeader .group,
 .participantRow .group {
   flex: 0 0 32px;
@@ -59,12 +63,14 @@
   flex: 0 0 32px;
 }
 
+/* ─── 리스트 영역 ─── */
 .participantTable {
   flex: 1;
   overflow-y: auto;
   background: #fff;
 }
 
+/* ─── 각 데이터 행 ─── */
 .participantRow {
   display: flex;
   align-items: center;
@@ -78,6 +84,7 @@
   justify-content: center;
 }
 
+/* ─── 입력박스: 조 / G핸디 / 점수 ─── */
 .participantRow .group input,
 .participantRow .handicap input,
 .participantRow .score input {
@@ -91,6 +98,7 @@
   box-sizing: border-box;
 }
 
+/* ─── 닉네임 입력박스 ─── */
 .participantRow .nickname input {
   width: 100%;
   height: 28px;
@@ -102,6 +110,7 @@
   box-sizing: border-box;
 }
 
+/* ─── 수동/취소 버튼 스타일 ─── */
 .participantRow .manual button,
 .participantRow .force button {
   width: 28px;
@@ -124,6 +133,7 @@
   background: #e0e0e0;
 }
 
+/* ─── spinner 애니메이션 ─── */
 .spinner {
   display: inline-block;
   width: 16px;
@@ -137,11 +147,14 @@
   to { transform: rotate(360deg); }
 }
 
-.smallBtn[disabled] {
+/* ─── disabled 버튼 투명도 ─── */
+.smallBtn[disabled],
+.textOnly[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* ─── 하단 버튼 ─── */
 .stepFooter {
   display: flex;
   gap: 6px;
@@ -155,7 +168,7 @@
   font-size: 14px;
   text-align: center;
   border: 1px solid #ccc;
-  background: #f0f0f0;
+  background: #f0f0f0; /* 기본 “이전/다음” 버튼 배경 */
   color: #333;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -167,10 +180,12 @@
   background: #d0d0d0;
 }
 
+/* ─── “자동배정/초기화” 전용 스타일 ─── */
+/* 기존 .stepFooter button 스타일보다 우선하도록 !important 처리 */
 .textOnly {
-  background: #fff;
-  color: #007bff;
-  border-color: #ccc;
+  background: #fff !important;    /* 버튼 배경 흰색 */
+  color: #007bff !important;      /* 텍스트 파란색 */
+  border-color: #ccc !important;
 }
 .textOnly:hover {
   background: #f0f0f0;

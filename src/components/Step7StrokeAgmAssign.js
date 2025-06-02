@@ -1,15 +1,13 @@
-// src/components/Step7StrokeAgmAssign.js
-
 import React, { useState } from 'react';
 import styles from './Step7StrokeAgmAssign.module.css';
 
+// 배열을 무작위로 섞는 헬퍼 함수
 function shuffle(arr) {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
 export default function Step7StrokeAgmAssign({
   participants,    // [{ id, group, nickname, handicap, score, room, partner }, …]
-  rooms,           // [1,2,…N]
   onScoreChange,   // (id, value) => void
   onManualAssign,  // (id) => void       (App.js 의 handleAgmManualAssign)
   onCancel,        // (id) => void       (App.js 의 handleAgmCancel)
@@ -21,6 +19,7 @@ export default function Step7StrokeAgmAssign({
   const half = participants.length / 2;
   const [loadingId, setLoadingId] = useState(null);
 
+  // 이미 같은 방에 2조가 매칭된 1조인지 확인
   const isCompleted = id => {
     const p1 = participants.find(p => p.id === id);
     if (!p1 || p1.room == null) return false;
@@ -29,6 +28,7 @@ export default function Step7StrokeAgmAssign({
     );
   };
 
+  // 1조 “수동” 버튼 클릭 시 처리
   function handleAgmAssign(id) {
     if (isCompleted(id)) return;
     setLoadingId(id);
@@ -40,10 +40,12 @@ export default function Step7StrokeAgmAssign({
 
   return (
     <div className={styles.step}>
+      {/* ─── 상단 헤더 ─── */}
       <div className={styles.stepHeader}>
         <h3>7. 포볼 방배정</h3>
       </div>
 
+      {/* ─── 테이블 헤더 ─── */}
       <div className={styles.participantRowHeader}>
         <div className={`${styles.cell} ${styles.group}`}>조</div>
         <div className={`${styles.cell} ${styles.nickname}`}>닉네임</div>
@@ -53,9 +55,11 @@ export default function Step7StrokeAgmAssign({
         <div className={`${styles.cell} ${styles.force}`}>취소</div>
       </div>
 
+      {/* ─── 참가자 리스트 ─── */}
       <div className={styles.participantTable}>
         {participants.map(p => {
           const isGroup1 = p.id < half;
+          // “배정 완료”된 1조라면 비활성화(false → 버튼 disabled)
           const done = isGroup1 && isCompleted(p.id);
 
           return (
@@ -81,12 +85,13 @@ export default function Step7StrokeAgmAssign({
                 />
               </div>
 
+              {/* ─── 수동 버튼 (1조만 표시, 완료되면 disabled) ─── */}
               <div className={`${styles.cell} ${styles.manual}`}>
                 {isGroup1 ? (
                   <button
-                    className={styles.smallBtn}
                     onClick={() => handleAgmAssign(p.id)}
                     disabled={done || loadingId === p.id}
+                    className={styles.textOnly}
                   >
                     {loadingId === p.id ? (
                       <span className={styles.spinner} />
@@ -101,14 +106,12 @@ export default function Step7StrokeAgmAssign({
                 )}
               </div>
 
+              {/* ─── 취소 버튼 (1조만 표시) ─── */}
               <div className={`${styles.cell} ${styles.force}`}>
                 {isGroup1 ? (
                   <button
+                    onClick={() => { if (!p.room) return; onCancel(p.id); }}
                     className={styles.smallBtn}
-                    onClick={() => {
-                      if (!p.room) return;
-                      onCancel(p.id);
-                    }}
                   >
                     취소
                   </button>
@@ -121,19 +124,14 @@ export default function Step7StrokeAgmAssign({
         })}
       </div>
 
+      {/* ─── 하단 버튼 (자동배정 / 초기화 / 이전 / 다음) ─── */}
       <div className={styles.stepFooter}>
         <button onClick={onPrev}>← 이전</button>
 
-        <button
-          onClick={onAutoAssign}
-          className={styles.textOnly}
-        >
+        <button onClick={onAutoAssign} className={styles.textOnly}>
           자동배정
         </button>
-        <button
-          onClick={onReset}
-          className={styles.textOnly}
-        >
+        <button onClick={onReset} className={styles.textOnly}>
           초기화
         </button>
 
